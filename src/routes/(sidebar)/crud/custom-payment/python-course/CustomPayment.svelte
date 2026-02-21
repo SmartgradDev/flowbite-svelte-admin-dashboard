@@ -1,16 +1,15 @@
 <script lang="ts">
-	import { Button, Input, Label, Modal, Textarea, Dropdown, DropdownItem, DropdownHeader, Toggle } from 'flowbite-svelte';
-	import { ChevronDownOutline } from 'flowbite-svelte-icons';
+	import { Button, Input, Label, Modal, Toggle } from 'flowbite-svelte';
 	import axios from 'axios';
 	import { onMount } from 'svelte';
 
 	export let open: boolean = false; // modal control
-	export let data: Record<string, string> = {};
+	export let data: any = {};
 
-	let token;
-	const apiUrl = process.env.VITE_API_URL;
+	let token: string | null;
+	const apiUrl = import.meta.env.VITE_API_URL;
 
-	function getCookie(name) {
+	function getCookie(name: string): string | null {
 		const cookies = document.cookie.split(';');
 		for (let i = 0; i < cookies.length; i++) {
 			const cookie = cookies[i].trim();
@@ -21,23 +20,50 @@
 		return null;
 	}
 
-	async function handleSubmit() {
+	async function handleSubmit(event: Event) {
+		event.preventDefault();
 		console.log("Inside submit");
-		console.log(data);
 		console.log(token);
 
 		try {
-			const response = await axios.patch(`${apiUrl}/admin/customPaymentUpdate`, data, {
+			// Prepare the payload with proper type conversions
+			const payload = {
+				id: data.id,
+				name: data.name,
+				email: data.email,
+				emailVerified: Boolean(data.emailVerified),
+				amount: data.amount,
+				what_are_you_purchasing: data.what_are_you_purchasing,
+				reference: data.reference || null,
+				contact_number: data.contact_number || null,
+				transaction_id: data.transaction_id || null,
+				school_name: data.school_name || null,
+				grade: data.grade || null,
+				coupon_code: data.coupon_code || null,
+				discount_amount: data.discount_amount ? parseInt(data.discount_amount) : null,
+				final_amount: data.final_amount ? parseInt(data.final_amount) : null
+			};
+
+			console.log("Payload to send:", payload);
+
+			const response = await axios.patch(`${apiUrl}/admin/customPaymentUpdate`, payload, {
 				headers: {
 					Authorization: `Bearer ${token}`,
 					'Content-Type': 'application/json'
 				}
 			});
+			
+			console.log("Update response:", response.data);
 			open = false;
 			window.location.reload();
-			console.log(response.data);
-		} catch (error) {
+		} catch (error: any) {
 			console.error('Error updating custom payment:', error);
+			if (error.response) {
+				console.error('Error response:', error.response.data);
+				alert(`Error: ${error.response.data.error || 'Failed to update custom payment'}`);
+			} else {
+				alert('Failed to update custom payment. Please try again.');
+			}
 		}
 	}
 
@@ -45,27 +71,10 @@
 		// Retrieve the token from session storage
 		token = getCookie('token');
 	});
-
-	function init(form: HTMLFormElement) {
-		const formData = new FormData(form);
-		data.name = formData.get('name') as string;
-		data.email = formData.get('email') as string;
-		data.emailVerified = data.emailVerified; // Keep the current toggle state
-		data.amount = formData.get('amount') as string;
-		data.what_are_you_purchasing = formData.get('what_are_you_purchasing') as string;
-		data.reference = formData.get('reference') as string;
-		data.contact_number = formData.get('contact_number') as string;
-		data.transaction_id = formData.get('transaction_id') as string;
-		data.school_name = formData.get('school_name') as string;
-		data.grade = formData.get('grade') as string;
-		data.coupon_code = formData.get('coupon_code') as string;
-		data.discount_amount = formData.get('discount_amount') as string;
-		data.final_amount = formData.get('final_amount') as string;
-	}
 </script>
 
 <Modal bind:open size="md" autoclose={false} class="w-full">
-	<form class="flex flex-col space-y-6" action="#" use:init>
+	<form class="flex flex-col space-y-6" on:submit={handleSubmit}>
 		<h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Edit Custom Payment</h3>
 		
 		<Label class="space-y-2">
@@ -197,6 +206,6 @@
 			/>
 		</Label>
 
-		<Button type="submit" class="w-full" on:click={handleSubmit}>Update Custom Payment</Button>
+		<Button type="submit" class="w-full">Update Custom Payment</Button>
 	</form>
 </Modal>
