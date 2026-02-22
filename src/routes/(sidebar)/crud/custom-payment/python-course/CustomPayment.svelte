@@ -37,6 +37,7 @@
 				reference: data.reference || null,
 				contact_number: data.contact_number || null,
 				transaction_id: data.transaction_id || null,
+				payment_option: data.payment_option || null,
 				school_name: data.school_name || null,
 				grade: data.grade || null,
 				coupon_code: data.coupon_code || null,
@@ -153,6 +154,16 @@
 				name="transaction_id"
 				bind:value={data.transaction_id}
 				placeholder="Enter transaction ID"
+			/>
+		</Label>
+
+		<Label class="space-y-2">
+			<span>Payment Option</span>
+			<Input
+				type="text"
+				name="payment_option"
+				bind:value={data.payment_option}
+				placeholder="Enter payment option"
 			/>
 		</Label>
 

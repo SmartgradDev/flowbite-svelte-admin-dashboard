@@ -417,6 +417,7 @@
 					<TableHeadCell>Amount</TableHeadCell>
 					<TableHeadCell>Contact Number</TableHeadCell>
 					<TableHeadCell>Transaction ID</TableHeadCell>
+					<TableHeadCell>Payment Option</TableHeadCell>
 					<TableHeadCell>School Name</TableHeadCell>
 					<TableHeadCell>Grade</TableHeadCell>
 					<TableHeadCell>Coupon Code</TableHeadCell>
@@ -457,6 +458,7 @@
 							<TableBodyCell>{customPayment.amount || 'N/A'}</TableBodyCell>
 							<TableBodyCell>{customPayment.contact_number || 'N/A'}</TableBodyCell>
 							<TableBodyCell>{customPayment.transaction_id || 'N/A'}</TableBodyCell>
+							<TableBodyCell>{customPayment.payment_option || 'N/A'}</TableBodyCell>
 							<TableBodyCell>{customPayment.school_name || 'N/A'}</TableBodyCell>
 							<TableBodyCell>{customPayment.grade || 'N/A'}</TableBodyCell>
 							<TableBodyCell>
