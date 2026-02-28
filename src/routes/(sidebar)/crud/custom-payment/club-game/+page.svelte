@@ -242,6 +242,63 @@
 		}
 	};
 
+	// Approve multiple club game payments
+	const approveMultiplePayments = async () => {
+		if (selectedPayments.length === 0) {
+			showToastMessage('Please select at least one payment to approve', 'error');
+			return;
+		}
+
+		approving = true;
+
+		try {
+			const token = getCookie('token');
+			const response = await axios.post(
+				`${apiUrl}/admin/approveMultipleClubGamePayments`,
+				{ customPaymentIds: selectedPayments },
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						'Content-Type': 'application/json'
+					}
+				}
+			);
+
+			const { successful, failed, total } = response.data.summary;
+			
+			if (failed === 0) {
+				showToastMessage(
+					`Successfully approved ${successful} payment(s)!`,
+					'success'
+				);
+			} else {
+				showToastMessage(
+					`Approved ${successful} of ${total} payment(s). ${failed} failed.`,
+					'error'
+				);
+			}
+
+			// Clear selection
+			selectedPayments = [];
+			selectAll = false;
+
+			// Refresh the data to show updated status
+			const refreshToken = getCookie('token');
+			if (refreshToken) {
+				await fetchAllCustomPaymentData(refreshToken);
+			}
+
+		} catch (error) {
+			console.error('Error approving multiple payments:', error);
+			showToastMessage(
+				error.response?.data?.error || 'Failed to approve payments. Please try again.',
+				'error'
+			);
+		} finally {
+			approving = false;
+		}
+	};
+
 	// Show toast message
 	const showToastMessage = (message, type) => {
 		toastMessage = message;
@@ -281,6 +338,17 @@
 						<PlusOutline class="mr-2 h-3.5 w-3.5" />
 						Add Custom Payment
 					</Button>
+					{#if selectedPayments.length > 0}
+						<Button 
+							on:click={approveMultiplePayments} 
+							disabled={approving}
+							color="green"
+							class="whitespace-nowrap ml-2"
+						>
+							<CheckCircleSolid class="mr-2 h-3.5 w-3.5" />
+							{approving ? 'Approving...' : `Approve Selected (${selectedPayments.length})`}
+						</Button>
+					{/if}
 				</ToolbarGroup>
 				<ToolbarGroup>
 					<ToolbarButton>
