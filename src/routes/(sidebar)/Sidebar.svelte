@@ -121,7 +121,8 @@
 			name: 'Custom Payment',
 			icon: CogOutline,
 			children: {
-				'Python Course': '/crud/custom-payment/python-course'
+				'Python Course': '/crud/custom-payment/python-course',
+				'Club Game': '/crud/custom-payment/club-game'
 			}
 		},
 		// { name: 'Settings', icon: CogOutline, href: '/settings' },
