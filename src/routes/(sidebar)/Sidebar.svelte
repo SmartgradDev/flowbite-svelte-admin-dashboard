@@ -122,6 +122,7 @@
 			icon: CogOutline,
 			children: {
 				'Python Course': '/crud/custom-payment/python-course',
+				'Chess Course': '/crud/custom-payment/chess-course',
 				'Club Game': '/crud/custom-payment/club-game'
 			}
 		},
