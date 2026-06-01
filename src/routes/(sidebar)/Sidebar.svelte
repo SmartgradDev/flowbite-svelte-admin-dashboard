@@ -123,6 +123,7 @@
 			children: {
 				'Python Course': '/crud/custom-payment/python-course',
 				'Chess Course': '/crud/custom-payment/chess-course',
+				'Summer Camp': '/crud/custom-payment/summercamp',
 				'Club Game': '/crud/custom-payment/club-game'
 			}
 		},
