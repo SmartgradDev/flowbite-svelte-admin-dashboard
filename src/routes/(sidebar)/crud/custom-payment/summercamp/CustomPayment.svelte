@@ -1,10 +1,17 @@
 <script lang="ts">
-	import { Button, Input, Label, Modal, Toggle } from 'flowbite-svelte';
+	import { Button, Input, Label, Modal, Toggle, Select } from 'flowbite-svelte';
 	import axios from 'axios';
 	import { onMount } from 'svelte';
 
 	export let open: boolean = false; // modal control
 	export let data: any = {};
+
+	const venues = [
+		{ name: 'Dhanmondi', value: 'Dhanmondi' },
+		{ name: 'Banani', value: 'Banani' },
+		{ name: 'Bashundhara', value: 'Bashundhara' },
+		{ name: 'Uttara', value: 'Uttara' }
+	];
 
 	let token: string | null;
 	const apiUrl = import.meta.env.VITE_API_URL;
@@ -40,6 +47,8 @@
 				payment_option: data.payment_option || null,
 				school_name: data.school_name || null,
 				grade: data.grade || null,
+				age: data.age ? parseInt(data.age) : null,
+				venue: data.venue || null,
 				coupon_code: data.coupon_code || null,
 				discount_amount: data.discount_amount ? parseInt(data.discount_amount) : null,
 				final_amount: data.final_amount ? parseInt(data.final_amount) : null
@@ -184,6 +193,26 @@
 				name="grade"
 				bind:value={data.grade}
 				placeholder="Enter grade (e.g., Grade 8, Class 10)"
+			/>
+		</Label>
+
+		<Label class="space-y-2">
+			<span>Age</span>
+			<Input
+				type="number"
+				name="age"
+				bind:value={data.age}
+				placeholder="Enter age"
+			/>
+		</Label>
+
+		<Label class="space-y-2">
+			<span>Venue</span>
+			<Select
+				items={venues}
+				name="venue"
+				bind:value={data.venue}
+				placeholder="Select venue"
 			/>
 		</Label>
 

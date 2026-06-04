@@ -416,6 +416,8 @@
 					<TableHeadCell>Payment Option</TableHeadCell>
 					<TableHeadCell>School Name</TableHeadCell>
 					<TableHeadCell>Grade</TableHeadCell>
+					<TableHeadCell>Age</TableHeadCell>
+					<TableHeadCell>Venue</TableHeadCell>
 					<TableHeadCell>Coupon Code</TableHeadCell>
 					<TableHeadCell>Final Amount</TableHeadCell>
 					<TableHeadCell>Reference</TableHeadCell>
@@ -457,6 +459,8 @@
 							<TableBodyCell>{customPayment.payment_option || 'N/A'}</TableBodyCell>
 							<TableBodyCell>{customPayment.school_name || 'N/A'}</TableBodyCell>
 							<TableBodyCell>{customPayment.grade || 'N/A'}</TableBodyCell>
+							<TableBodyCell>{customPayment.age || 'N/A'}</TableBodyCell>
+							<TableBodyCell>{customPayment.venue || 'N/A'}</TableBodyCell>
 							<TableBodyCell>
 								{#if customPayment.coupon_code}
 									<span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">

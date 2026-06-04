@@ -1,11 +1,18 @@
 <script lang="ts">
-	import { Button, Input, Label, Modal, Textarea, Dropdown, DropdownItem, DropdownHeader, Toggle } from 'flowbite-svelte';
+	import { Button, Input, Label, Modal, Textarea, Dropdown, DropdownItem, DropdownHeader, Toggle, Select } from 'flowbite-svelte';
 	import { ChevronDownOutline } from 'flowbite-svelte-icons';
 	import axios from 'axios';
 	import { onMount } from 'svelte';
 
 	export let open: boolean = false; // modal control
 	export let data: Record<string, any> = {};
+
+	const venues = [
+		{ name: 'Dhanmondi', value: 'Dhanmondi' },
+		{ name: 'Banani', value: 'Banani' },
+		{ name: 'Bashundhara', value: 'Bashundhara' },
+		{ name: 'Uttara', value: 'Uttara' }
+	];
 
 	let token;
 	const apiUrl = process.env.VITE_API_URL;
@@ -59,6 +66,8 @@
 		data.payment_option = formData.get('payment_option') as string;
 		data.school_name = formData.get('school_name') as string;
 		data.grade = formData.get('grade') as string;
+		data.age = formData.get('age') ? parseInt(formData.get('age') as string) : null;
+		data.venue = formData.get('venue') as string;
 		data.coupon_code = formData.get('coupon_code') as string;
 		data.discount_amount = formData.get('discount_amount') as string;
 		data.final_amount = formData.get('final_amount') as string;
@@ -175,6 +184,26 @@
 				name="grade"
 				bind:value={data.grade}
 				placeholder="Enter grade (e.g., Grade 8, Class 10)"
+			/>
+		</Label>
+
+		<Label class="space-y-2">
+			<span>Age</span>
+			<Input
+				type="number"
+				name="age"
+				bind:value={data.age}
+				placeholder="Enter age"
+			/>
+		</Label>
+
+		<Label class="space-y-2">
+			<span>Venue</span>
+			<Select
+				items={venues}
+				name="venue"
+				bind:value={data.venue}
+				placeholder="Select venue"
 			/>
 		</Label>
 
