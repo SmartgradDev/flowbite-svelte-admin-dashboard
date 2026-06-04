@@ -42,8 +42,8 @@
 	}
 
 	onMount(async () => {
-		// Retrieve the token from session storage
-		token = sessionStorage.getItem('token');
+		// Retrieve the token from cookies
+		token = getCookie('token');
 	});
 </script>
 
