@@ -96,7 +96,7 @@ export default function (dark) {
 					fontWeight: 500
 				},
 				formatter: function (value) {
-					return '$' + value;
+					return value;
 				}
 			}
 		},

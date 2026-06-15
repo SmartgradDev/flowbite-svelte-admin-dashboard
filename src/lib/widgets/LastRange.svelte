@@ -6,22 +6,40 @@
 
 	dayjs.extend(LocalizedFormat);
 
-	type TimeSlot = keyof typeof timeslots;
+	type TimeSlot = string;
 
 	export let timeslot: TimeSlot = 'Last 7 days';
-	export let timeslots = {
-		Yesterday: -1,
-		Today: 0,
+	export let timeslots: Record<string, number> = {
+		Today: 1,
+		'Last 3 days': 3,
 		'Last 7 days': 7,
 		'Last 30 days': 30,
 		'Last 90 days': 90
 	};
 
-	let timeslots_keys: TimeSlot[] = Object.keys(timeslots) as TimeSlot[];
+	$: timeslots_keys = Object.keys(timeslots);
 
 	let today = dayjs();
-	$: start = today.subtract(timeslots[timeslot], 'days').format('ll');
-	$: end = timeslot == 'Yesterday' ? start : today.format('ll');
+	$: start = today.subtract(timeslots[timeslot] || 7, 'days').format('ll');
+	$: end = today.format('ll');
+
+	function handleCustomClick(e: Event) {
+		e.preventDefault();
+		const input = prompt('Enter custom number of days (e.g. 14):');
+		if (input) {
+			const parsed = parseInt(input, 10);
+			if (!isNaN(parsed) && parsed > 0) {
+				const label = `Custom (${parsed} days)`;
+				timeslots = {
+					...timeslots,
+					[label]: parsed
+				};
+				timeslot = label;
+			} else {
+				alert('Please enter a valid number of days.');
+			}
+		}
+	}
 </script>
 
 <div class="font-normal">
@@ -47,7 +65,7 @@
 		{/each}
 
 		<div slot="footer" role="none">
-			<DropdownItem class="font-normal" href="#">Custom...</DropdownItem>
+			<DropdownItem class="font-normal" href="#" on:click={handleCustomClick}>Custom...</DropdownItem>
 		</div>
 	</Dropdown>
 </div>

@@ -8,6 +8,7 @@
 	export let title: string = '';
 	export let subtitle: string = '';
 	export let chartOptions: ApexOptions;
+	export let timeslot: string = 'Last 7 days';
 </script>
 
 <Card size="xl" class="w-full max-w-none 2xl:col-span-2">
@@ -23,7 +24,7 @@
 	<div
 		class="mt-4 flex items-center justify-between border-t border-gray-200 pt-3 dark:border-gray-700 sm:pt-6"
 	>
-		<LastRange />
+		<LastRange bind:timeslot />
 		<!-- <More title="Sales Report" href="#top" /> -->
 	</div>
 </Card>

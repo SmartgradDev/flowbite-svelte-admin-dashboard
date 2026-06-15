@@ -1,10 +1,12 @@
 <script lang="ts">
-	import options from '$lib/graphs/thinmultibars';
 	import LastRange from '$lib/widgets/LastRange.svelte';
 	import { Card, Chart, Input } from 'flowbite-svelte';
 	import { CalendarMonthOutline } from 'flowbite-svelte-icons';
 	import Change from './Change.svelte';
 	import More from '$lib/widgets/More.svelte';
+
+	export let options: any;
+	export let timeslot: string = 'Last 7 days';
 </script>
 
 <Card size="xl" class="h-fit">
@@ -33,7 +35,7 @@
 	<div
 		class="mt-4 flex items-center justify-between border-t border-gray-200 pt-3 dark:border-gray-700 sm:pt-6"
 	>
-		<LastRange />
+		<LastRange bind:timeslot />
 		<!-- <More title="Sales Report" href="#top" /> -->
 	</div></Card
 >
