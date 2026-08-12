@@ -66,11 +66,19 @@
 			name: 'Users',
 			icon: UserSolid,
 			children: {
-
 				Admin: '/crud/users',
 				Student: '/crud/students',
 				Teacher: '/crud/teachers',
 				Instructor: '/crud/instructor',
+				'Pending Users': '/crud/pending-users'
+			}
+		},
+		{
+			name: 'Settings',
+			icon: CogOutline,
+			children: {
+				'System Settings': '/settings/system',
+				'User Settings': '/settings'
 			}
 		},
 

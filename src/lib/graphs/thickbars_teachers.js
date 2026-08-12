@@ -76,6 +76,7 @@ let chartOptions = {
 console.log("GG");
 
 // Fetch data from the server
+if (typeof window !== 'undefined' && process.env.VITE_API_URL) {
 fetch(process.env.VITE_API_URL+'/admin/weeklyTeacherGain')
     .then(response => response.json())
     .then(data => {
@@ -83,7 +84,9 @@ fetch(process.env.VITE_API_URL+'/admin/weeklyTeacherGain')
         const fetchedData = data.result;
 
         // Modify the chart data with fetched data
-        chartOptions.series[0].data = fetchedData;
+        if (fetchedData) {
+            chartOptions.series[0].data = fetchedData;
+        }
 
         // Assuming you have already initialized your chart, update the chart with modified data
         // chart.updateOptions(chartOptions);
@@ -91,6 +94,7 @@ fetch(process.env.VITE_API_URL+'/admin/weeklyTeacherGain')
     .catch(error => {
         console.error('Error fetching data:', error);
     });
+}
 
 // Export chartOptions
 export default chartOptions;
