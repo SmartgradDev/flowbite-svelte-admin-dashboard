@@ -132,7 +132,8 @@
 				'Python Course': '/crud/custom-payment/python-course',
 				'Chess Course': '/crud/custom-payment/chess-course',
 				'Summer Camp': '/crud/custom-payment/summercamp',
-				'Club Game': '/crud/custom-payment/club-game'
+				'Club Game': '/crud/custom-payment/club-game',
+				'SBS Workshop Q126': '/crud/custom-payment/sbs-workshop-q126'
 			}
 		},
 		// { name: 'Settings', icon: CogOutline, href: '/settings' },
