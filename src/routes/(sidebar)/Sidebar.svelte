@@ -133,7 +133,8 @@
 				'Chess Course': '/crud/custom-payment/chess-course',
 				'Summer Camp': '/crud/custom-payment/summercamp',
 				'Club Game': '/crud/custom-payment/club-game',
-				'SBS Workshop Q126': '/crud/custom-payment/sbs-workshop-q126'
+				'SBS Workshop Q126': '/crud/custom-payment/sbs-workshop-q126',
+				'HURDCO Workshop': '/crud/custom-payment/hurdco-workshop'
 			}
 		},
 		// { name: 'Settings', icon: CogOutline, href: '/settings' },
