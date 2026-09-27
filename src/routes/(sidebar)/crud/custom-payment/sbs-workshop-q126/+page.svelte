@@ -61,6 +61,7 @@
 
 	// Define customPaymentData variable
 	let customPaymentData = [];
+	let selectedVenue = 'Dhanmondi';
 	let selectedPayments = [];
 	let selectAll = false;
 	let emailSending = false;
@@ -68,6 +69,22 @@
 	let showToast = false;
 	let toastMessage = '';
 	let toastType = 'success'; // 'success' or 'error'
+
+	$: filteredPaymentData = customPaymentData.filter(payment => {
+		if (selectedVenue === 'All') return true;
+		
+		// Workaround: Treat old users with no venue as 'Uttara'
+		if (!payment.venue) {
+			return selectedVenue === 'Uttara';
+		}
+		
+		return payment.venue.toLowerCase().includes(selectedVenue.toLowerCase());
+	});
+
+	$: if (selectedVenue) {
+		selectedPayments = [];
+		selectAll = false;
+	}
 
 	// Function to fetch all custom payment data
 	const fetchAllCustomPaymentData = async (token) => {
@@ -209,7 +226,7 @@
 	// Handle select all checkbox
 	const handleSelectAll = () => {
 		if (selectAll) {
-			selectedPayments = customPaymentData.map(payment => payment.id);
+			selectedPayments = filteredPaymentData.map(payment => payment.id);
 		} else {
 			selectedPayments = [];
 		}
@@ -224,7 +241,7 @@
 		}
 		
 		// Update selectAll state
-		selectAll = selectedPayments.length === customPaymentData.length;
+		selectAll = selectedPayments.length > 0 && selectedPayments.length === filteredPaymentData.length;
 	};
 
 	// Send SBS Workshop emails
@@ -319,6 +336,11 @@
 						<PlusOutline class="mr-2 h-3.5 w-3.5" />
 						Add Custom Payment
 					</Button>
+					<select class="w-48 ml-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" bind:value={selectedVenue}>
+						<option value="Dhanmondi">Dhanmondi</option>
+						<option value="Uttara">Uttara</option>
+						<option value="All">All Venues</option>
+					</select>
 					<Button 
 						on:click={() => openEmailPreview = true}
 						disabled={selectedPayments.length === 0}
@@ -417,6 +439,7 @@
 					<TableHeadCell>Contact Number</TableHeadCell>
 					<TableHeadCell>Transaction ID</TableHeadCell>
 					<TableHeadCell>Payment Option</TableHeadCell>
+					<TableHeadCell>Venue</TableHeadCell>
 					<TableHeadCell>School Name</TableHeadCell>
 					<TableHeadCell>Grade</TableHeadCell>
 					<TableHeadCell>Coupon Code</TableHeadCell>
@@ -426,7 +449,7 @@
 					<TableHeadCell>Actions</TableHeadCell>
 				</TableHead>
 				<TableBody>
-					{#each customPaymentData as customPayment, index}
+					{#each filteredPaymentData as customPayment, index}
 						<TableBodyRow>
 							<TableBodyCell>
 								<Checkbox 
@@ -458,6 +481,7 @@
 							<TableBodyCell>{customPayment.contact_number || 'N/A'}</TableBodyCell>
 							<TableBodyCell>{customPayment.transaction_id || 'N/A'}</TableBodyCell>
 							<TableBodyCell>{customPayment.payment_option || 'N/A'}</TableBodyCell>
+							<TableBodyCell>{customPayment.venue || 'N/A'}</TableBodyCell>
 							<TableBodyCell>{customPayment.school_name || 'N/A'}</TableBodyCell>
 							<TableBodyCell>{customPayment.grade || 'N/A'}</TableBodyCell>
 							<TableBodyCell>
