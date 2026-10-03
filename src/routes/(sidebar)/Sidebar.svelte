@@ -134,7 +134,8 @@
 				'Summer Camp': '/crud/custom-payment/summercamp',
 				'Club Game': '/crud/custom-payment/club-game',
 				'SBS Workshop Q126': '/crud/custom-payment/sbs-workshop-q126',
-				'HURDCO Workshop': '/crud/custom-payment/hurdco-workshop'
+				'HURDCO Workshop': '/crud/custom-payment/hurdco-workshop',
+				'FSA Uttara Workshop': '/crud/custom-payment/fsa-uttara-workshop'
 			}
 		},
 		// { name: 'Settings', icon: CogOutline, href: '/settings' },
