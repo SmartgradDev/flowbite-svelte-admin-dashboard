@@ -11,7 +11,13 @@
 	} from 'flowbite-svelte';
 	import { Input, Table, TableBody, TableBodyCell, TableBodyRow, TableHead } from 'flowbite-svelte';
 	import { TableHeadCell, Toolbar, ToolbarButton, ToolbarGroup } from 'flowbite-svelte';
-	import { CogSolid, DotsVerticalOutline, DownloadSolid, MailBoxSolid, EyeOutline } from 'flowbite-svelte-icons';
+	import {
+		CogSolid,
+		DotsVerticalOutline,
+		DownloadSolid,
+		MailBoxSolid,
+		EyeOutline
+	} from 'flowbite-svelte-icons';
 	import {
 		EditOutline,
 		ExclamationCircleSolid,
@@ -31,18 +37,18 @@
 	import axios from 'axios';
 
 	const apiUrl = process.env.VITE_API_URL;
-	
+
 	// Set payment_type to hurdco-workshop for this specific route
 	const payment_type = 'hurdco-workshop';
 
 	function setCookie(name, value, days) {
-		let expires = "";
+		let expires = '';
 		if (days) {
 			let date = new Date();
-			date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-			expires = "; expires=" + date.toUTCString();
+			date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+			expires = '; expires=' + date.toUTCString();
 		}
-		document.cookie = name + "=" + (value || "") + expires + "; path=/";
+		document.cookie = name + '=' + (value || '') + expires + '; path=/';
 	}
 
 	function getCookie(name) {
@@ -72,7 +78,6 @@
 	// Function to fetch all custom payment data
 	const fetchAllCustomPaymentData = async (token) => {
 		try {
-
 			const url = `${BASE_URL}/admin/allcustomPaymentData?search_value=${payment_type}&search_by=what_are_you_purchasing`;
 			console.log('url==', url);
 			const response = await axios.get(url, {
@@ -108,14 +113,18 @@
 			// Make a POST request to the refreshToken endpoint with the token and refresh token
 			console.log(token);
 			console.log(refreshToken);
-			const response = await axios.post(`${BASE_URL_refreshtoken}/admin/refreshToken/`, {
-				token,
-				refreshToken
-			}, {
-				headers: {
-					'Content-Type': 'application/json'
+			const response = await axios.post(
+				`${BASE_URL_refreshtoken}/admin/refreshToken/`,
+				{
+					token,
+					refreshToken
+				},
+				{
+					headers: {
+						'Content-Type': 'application/json'
+					}
 				}
-			});
+			);
 
 			// Extract the new token and refresh token from the response
 			const newToken = response.data.token;
@@ -203,13 +212,13 @@
 
 	// Format payment type for display
 	const formatPaymentType = (type) => {
-		return type ? type.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : '';
+		return type ? type.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()) : '';
 	};
 
 	// Handle select all checkbox
 	const handleSelectAll = () => {
 		if (selectAll) {
-			selectedPayments = customPaymentData.map(payment => payment.id);
+			selectedPayments = customPaymentData.map((payment) => payment.id);
 		} else {
 			selectedPayments = [];
 		}
@@ -220,9 +229,9 @@
 		if (checked) {
 			selectedPayments = [...selectedPayments, paymentId];
 		} else {
-			selectedPayments = selectedPayments.filter(id => id !== paymentId);
+			selectedPayments = selectedPayments.filter((id) => id !== paymentId);
 		}
-		
+
 		// Update selectAll state
 		selectAll = selectedPayments.length === customPaymentData.length;
 	};
@@ -238,7 +247,7 @@
 		emailResults = null;
 
 		try {
-			console.log('selectedPayments', selectedPayments)
+			console.log('selectedPayments', selectedPayments);
 			const token = getCookie('token');
 			const response = await axios.post(
 				`${apiUrl}/admin/sendHurdcoWorkshopEmails`,
@@ -257,8 +266,8 @@
 				'success'
 			);
 
-			console.log('emailResults====', emailResults)
-			
+			console.log('emailResults====', emailResults);
+
 			// Clear selections after successful send
 			selectedPayments = [];
 			selectAll = false;
@@ -268,7 +277,6 @@
 			if (refreshToken) {
 				await fetchAllCustomPaymentData(refreshToken);
 			}
-
 		} catch (error) {
 			console.error('Error sending emails:', error);
 			showToastMessage(
@@ -285,7 +293,7 @@
 		toastMessage = message;
 		toastType = type;
 		showToast = true;
-		
+
 		// Auto-hide toast after 5 seconds
 		setTimeout(() => {
 			showToast = false;
@@ -308,9 +316,7 @@
 		<Heading tag="h1" class="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">
 			Custom Payment - HURDCO Workshop
 		</Heading>
-		<p class="mb-6 text-gray-500 dark:text-gray-400">
-			Manage custom payments for HURDCO Workshop
-		</p>
+		<p class="mb-6 text-gray-500 dark:text-gray-400">Manage custom payments for HURDCO Workshop</p>
 
 		<div class="relative overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg">
 			<Toolbar embedded class="w-full py-4 text-left text-gray-500 dark:text-gray-400">
@@ -319,19 +325,19 @@
 						<PlusOutline class="mr-2 h-3.5 w-3.5" />
 						Add Custom Payment
 					</Button>
-					<Button 
-						on:click={() => openEmailPreview = true}
+					<Button
+						on:click={() => (openEmailPreview = true)}
 						disabled={selectedPayments.length === 0}
-						class="whitespace-nowrap ml-2"
+						class="ml-2 whitespace-nowrap"
 						color="alternative"
 					>
 						<EyeOutline class="mr-2 h-3.5 w-3.5" />
 						Preview Email
 					</Button>
-					<Button 
-						on:click={sendHurdcoWorkshopEmails} 
+					<Button
+						on:click={sendHurdcoWorkshopEmails}
 						disabled={selectedPayments.length === 0 || emailSending}
-						class="whitespace-nowrap ml-2"
+						class="ml-2 whitespace-nowrap"
 						color="blue"
 					>
 						<MailBoxSolid class="mr-2 h-3.5 w-3.5" />
@@ -356,15 +362,18 @@
 			</Toolbar>
 
 			{#if selectedPayments.length > 0}
-				<div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4 dark:bg-blue-900 dark:border-blue-600">
+				<div
+					class="mb-4 border-l-4 border-blue-400 bg-blue-50 p-4 dark:border-blue-600 dark:bg-blue-900"
+				>
 					<div class="flex">
 						<div class="flex-shrink-0">
 							<MailBoxSolid class="h-5 w-5 text-blue-400" />
 						</div>
 						<div class="ml-3">
 							<p class="text-sm text-blue-700 dark:text-blue-200">
-								{selectedPayments.length} payment{selectedPayments.length > 1 ? 's' : ''} selected for email sending.
-								Click "Send HURDCO Workshop Emails" to notify these users about their verified registration.
+								{selectedPayments.length} payment{selectedPayments.length > 1 ? 's' : ''} selected for
+								email sending. Click "Send HURDCO Workshop Emails" to notify these users about their
+								verified registration.
 							</p>
 						</div>
 					</div>
@@ -372,7 +381,9 @@
 			{/if}
 
 			{#if emailResults}
-				<div class="bg-green-50 border-l-4 border-green-400 p-4 mb-4 dark:bg-green-900 dark:border-green-600">
+				<div
+					class="mb-4 border-l-4 border-green-400 bg-green-50 p-4 dark:border-green-600 dark:bg-green-900"
+				>
 					<div class="flex">
 						<div class="flex-shrink-0">
 							<CheckCircleSolid class="h-5 w-5 text-green-400" />
@@ -387,11 +398,11 @@
 								<p>Failed: {emailResults.summary.failed}</p>
 								<p>Emails marked as verified: {emailResults.summary.emailsMarkedAsVerified || 0}</p>
 							</div>
-							{#if emailResults.results.some(r => !r.success)}
+							{#if emailResults.results.some((r) => !r.success)}
 								<div class="mt-2">
 									<p class="text-sm font-medium text-red-800 dark:text-red-200">Failed emails:</p>
-									<ul class="list-disc list-inside text-sm text-red-700 dark:text-red-200">
-										{#each emailResults.results.filter(r => !r.success) as failedResult}
+									<ul class="list-inside list-disc text-sm text-red-700 dark:text-red-200">
+										{#each emailResults.results.filter((r) => !r.success) as failedResult}
 											<li>{failedResult.email || failedResult.name} - {failedResult.error}</li>
 										{/each}
 									</ul>
@@ -405,10 +416,7 @@
 			<Table hoverable={true}>
 				<TableHead>
 					<TableHeadCell>
-						<Checkbox 
-							bind:checked={selectAll} 
-							on:change={handleSelectAll}
-						/>
+						<Checkbox bind:checked={selectAll} on:change={handleSelectAll} />
 					</TableHeadCell>
 					<TableHeadCell>Name</TableHeadCell>
 					<TableHeadCell>Email</TableHeadCell>
@@ -429,7 +437,7 @@
 					{#each customPaymentData as customPayment, index}
 						<TableBodyRow>
 							<TableBodyCell>
-								<Checkbox 
+								<Checkbox
 									checked={selectedPayments.includes(customPayment.id)}
 									on:change={(e) => handleSelectPayment(customPayment.id, e.target.checked)}
 								/>
@@ -439,17 +447,20 @@
 								<div class="flex items-center">
 									{customPayment.email || 'N/A'}
 									{#if !customPayment.email}
-										<ExclamationCircleSolid class="ml-2 h-4 w-4 text-red-500" title="No email address" />
+										<ExclamationCircleSolid
+											class="ml-2 h-4 w-4 text-red-500"
+											title="No email address"
+										/>
 									{/if}
 								</div>
 							</TableBodyCell>
 							<TableBodyCell>
 								<div class="flex items-center">
 									{#if customPayment.emailVerified}
-										<CheckCircleSolid class="h-4 w-4 text-green-500 mr-1" />
+										<CheckCircleSolid class="mr-1 h-4 w-4 text-green-500" />
 										<span class="text-green-700 dark:text-green-400">Verified</span>
 									{:else}
-										<CloseCircleSolid class="h-4 w-4 text-red-500 mr-1" />
+										<CloseCircleSolid class="mr-1 h-4 w-4 text-red-500" />
 										<span class="text-red-700 dark:text-red-400">Not Verified</span>
 									{/if}
 								</div>
@@ -462,7 +473,9 @@
 							<TableBodyCell>{customPayment.grade || 'N/A'}</TableBodyCell>
 							<TableBodyCell>
 								{#if customPayment.coupon_code}
-									<span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
+									<span
+										class="rounded bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800"
+									>
 										{customPayment.coupon_code}
 									</span>
 								{:else}
@@ -473,7 +486,9 @@
 								{#if customPayment.final_amount}
 									<span class="font-semibold">৳{customPayment.final_amount}</span>
 									{#if customPayment.discount_amount}
-										<span class="text-green-600 text-sm block">(-৳{customPayment.discount_amount})</span>
+										<span class="block text-sm text-green-600"
+											>(-৳{customPayment.discount_amount})</span
+										>
 									{/if}
 								{:else}
 									{customPayment.amount || 'N/A'}
@@ -514,16 +529,12 @@
 
 <!-- Toast for notifications -->
 {#if showToast}
-	<Toast 
-		position="top-right" 
-		color={toastType === 'success' ? 'green' : 'red'}
-		class="mb-4"
-	>
+	<Toast position="top-right" color={toastType === 'success' ? 'green' : 'red'} class="mb-4">
 		<svelte:fragment slot="icon">
 			{#if toastType === 'success'}
-				<CheckCircleSolid class="w-5 h-5" />
+				<CheckCircleSolid class="h-5 w-5" />
 			{:else}
-				<CloseCircleSolid class="w-5 h-5" />
+				<CloseCircleSolid class="h-5 w-5" />
 			{/if}
 		</svelte:fragment>
 		{toastMessage}

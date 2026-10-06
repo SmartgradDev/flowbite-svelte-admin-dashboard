@@ -14,7 +14,7 @@
 
 	// Check if a tag is selected
 	function isTagSelected(tagId: string) {
-		return data.tags && data.tags.some(tag => tag.tag.id === tagId);
+		return data.tags && data.tags.some((tag) => tag.tag.id === tagId);
 	}
 
 	// Handle tag selection
@@ -23,11 +23,11 @@
 			data.tags = [];
 		}
 
-		const index = data.tags.findIndex(tag => tag.tag.id === id);
+		const index = data.tags.findIndex((tag) => tag.tag.id === id);
 
 		if (index !== -1) {
 			// Tag is already selected, remove it
-			data.tags = data.tags.filter(tag => tag.tag.id !== id);
+			data.tags = data.tags.filter((tag) => tag.tag.id !== id);
 		} else {
 			// Tag is not selected, add it
 			data.tags = [...data.tags, { tag: { id, name } }];
@@ -62,22 +62,26 @@
 
 	// Handle form submission
 	async function handleSubmit() {
-		console.log("Inside submit");
+		console.log('Inside submit');
 		console.log(data);
 
 		// Prepare the tags to send
-		const tagsToSend = data.tags ? data.tags.map(tag => ({ tagId: tag.tag.id })) : [];
+		const tagsToSend = data.tags ? data.tags.map((tag) => ({ tagId: tag.tag.id })) : [];
 
 		// API endpoint for updating the instructor
 		let instructorUpdateApi = `${apiUrl}/admin/editInstructor`;
 
 		try {
 			// Make the PATCH request to update the instructor
-			const response = await axios.patch(instructorUpdateApi, { ...data, tags: tagsToSend }, {
-				headers: {
-					Authorization: `Bearer ${token}`
+			const response = await axios.patch(
+				instructorUpdateApi,
+				{ ...data, tags: tagsToSend },
+				{
+					headers: {
+						Authorization: `Bearer ${token}`
+					}
 				}
-			});
+			);
 
 			// Close the modal and reload the page
 			open = false;
@@ -101,7 +105,7 @@
 	// Fetch tags on component mount
 	onMount(async () => {
 		token = getCookie('token');
-		console.log("Token:", token);
+		console.log('Token:', token);
 
 		// Fetch all tags
 		let allTagApi = `${apiUrl}/admin/tags/`;
@@ -111,7 +115,7 @@
 			}
 		});
 		tagData = responseTags.data.result;
-		console.log("This is tag data", tagData);
+		console.log('This is tag data', tagData);
 		updateTagLabel();
 	});
 
@@ -121,44 +125,72 @@
 	});
 </script>
 
-<Modal
-	bind:open
-	title="Edit Instructor"
-	size="md"
-	class="m-4"
->
+<Modal bind:open title="Edit Instructor" size="md" class="m-4">
 	<!-- Modal body -->
 	<div class="space-y-6 p-0">
 		<form on:submit={handleSubmit} use:init>
 			<div class="grid grid-cols-6 gap-6">
 				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>Description</span>
-					<Input bind:value={data.description} name="description" class="border outline-none" placeholder="e.g. Expert in AI" required />
+					<Input
+						bind:value={data.description}
+						name="description"
+						class="border outline-none"
+						placeholder="e.g. Expert in AI"
+						required
+					/>
 				</Label>
 
 				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>Academic Background</span>
-					<Input bind:value={data.academicBackground} name="academicBackground" class="border outline-none" placeholder="e.g. PhD in Computer Science" required />
+					<Input
+						bind:value={data.academicBackground}
+						name="academicBackground"
+						class="border outline-none"
+						placeholder="e.g. PhD in Computer Science"
+						required
+					/>
 				</Label>
 
 				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>Rating</span>
-					<Input bind:value={data.rating} name="rating" type="number" step="0.1" class="border outline-none" placeholder="e.g. 4.5" required />
+					<Input
+						bind:value={data.rating}
+						name="rating"
+						type="number"
+						step="0.1"
+						class="border outline-none"
+						placeholder="e.g. 4.5"
+						required
+					/>
 				</Label>
 
 				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>Topics</span>
-					<Input bind:value={data.topics} name="topics" class="border outline-none" placeholder="e.g. AI, Robotics" required />
+					<Input
+						bind:value={data.topics}
+						name="topics"
+						class="border outline-none"
+						placeholder="e.g. AI, Robotics"
+						required
+					/>
 				</Label>
 
 				<Label class="col-span-6 space-y-2">
 					<span>Tags</span>
 					<div class="pt-5">
-						<Button>{tag_label}<ChevronDownOutline class="w-6 h-6 ms-2 text-white dark:text-white" /></Button>
-						<Dropdown class="overflow-y-auto max-h-80 w-44 p-3 space-y-3 text-sm">
+						<Button
+							>{tag_label}<ChevronDownOutline
+								class="ms-2 h-6 w-6 text-white dark:text-white"
+							/></Button
+						>
+						<Dropdown class="max-h-80 w-44 space-y-3 overflow-y-auto p-3 text-sm">
 							{#each tagData as tag}
 								<li>
-									<Checkbox checked={isTagSelected(tag.id)} on:change={() => handleTagSelect(tag.id, tag.name)}>
+									<Checkbox
+										checked={isTagSelected(tag.id)}
+										on:change={() => handleTagSelect(tag.id, tag.name)}
+									>
 										{tag.name}
 									</Checkbox>
 								</li>

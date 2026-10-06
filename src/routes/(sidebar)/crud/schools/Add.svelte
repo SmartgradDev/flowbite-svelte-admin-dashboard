@@ -1,5 +1,16 @@
 <script lang="ts">
-	import { Button, Input, Label, Modal, Textarea, Dropdown, DropdownItem, DropdownDivider, DropdownHeader,Checkbox} from 'flowbite-svelte';
+	import {
+		Button,
+		Input,
+		Label,
+		Modal,
+		Textarea,
+		Dropdown,
+		DropdownItem,
+		DropdownDivider,
+		DropdownHeader,
+		Checkbox
+	} from 'flowbite-svelte';
 	import { ChevronDownOutline } from 'flowbite-svelte-icons';
 	import axios from 'axios';
 	import { onMount } from 'svelte';
@@ -11,24 +22,22 @@
 	let token;
 	let teacherData = [];
 	let tagArray: { tagId: any }[] = [];
-	let teacher_label = "Select Teacher";
+	let teacher_label = 'Select Teacher';
 	let tagData: any = [];
 	let tag_label = 'Select Tags';
-
 
 	const handleTeacherSelect = (id: any, name: any) => {
 		teacher_label = name;
 		data.creatorId = id;
 		data.teacherName = name;
-	}
-
+	};
 
 	const handleTagSelect = (id: any, name: any) => {
-		const index = tagArray.findIndex(tag => tag.tagId === id);
+		const index = tagArray.findIndex((tag) => tag.tagId === id);
 
 		if (index !== -1) {
 			// Tag is already selected, remove it
-			tagArray = tagArray.filter(tag => tag.tagId !== id);
+			tagArray = tagArray.filter((tag) => tag.tagId !== id);
 		} else {
 			// Tag is not selected, add it
 			tagArray = [...tagArray, { tagId: id }];
@@ -36,70 +45,65 @@
 
 		// Update the tag label
 		updateTagLabel();
-	}
+	};
 
-  const updateTagLabel = () => {
+	const updateTagLabel = () => {
 		if (tagArray.length === 0) {
 			tag_label = 'Select Tags';
 		} else if (tagArray.length === 1) {
-			tag_label = tagData.find(tag => tag.id === tagArray[0].tagId)?.name || 'Select Tags';
+			tag_label = tagData.find((tag) => tag.id === tagArray[0].tagId)?.name || 'Select Tags';
 		} else {
 			tag_label = `${tagArray.length} tags selected`;
 		}
-	}
-
-
+	};
 
 	function getCookie(name) {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.startsWith(name + '=')) {
-        return cookie.substring(name.length + 1);
-      }
-    }
-    return null;
-  }
-  async function handleSubmit() {
-    // Assuming `token` is defined somewhere accessible
+		const cookies = document.cookie.split(';');
+		for (let i = 0; i < cookies.length; i++) {
+			const cookie = cookies[i].trim();
+			if (cookie.startsWith(name + '=')) {
+				return cookie.substring(name.length + 1);
+			}
+		}
+		return null;
+	}
+	async function handleSubmit() {
+		// Assuming `token` is defined somewhere accessible
 
+		// Assuming `data` contains the payload you want to send in the request
+		console.log('Inside submit');
+		console.log(data);
+		//console.log(data.id);
+		console.log(token);
+		data.user_type = 'student';
 
-    // Assuming `data` contains the payload you want to send in the request
-    console.log("Inside submit");
-    console.log(data);
-    //console.log(data.id);
-	console.log(token);
-	data.user_type = "student"
+		try {
+			const userDataResponse = await axios.get(`${apiUrl}/admin/userData`, {
+				headers: {
+					Authorization: `Bearer ${token}`
+				}
+			});
 
+			// Extracting the created_by_id from the response
+			const createdById = userDataResponse.data.user.id;
+			console.log('Created By ID:', createdById);
 
-    try {
-        const userDataResponse = await axios.get(`${apiUrl}/admin/userData`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+			// Assigning the created_by_id to data
+			data.created_by_id = createdById;
+			data.created_by_account_type = 'admin';
 
-        // Extracting the created_by_id from the response
-        const createdById = userDataResponse.data.user.id;
-        console.log('Created By ID:', createdById);
-
-        // Assigning the created_by_id to data
-        data.created_by_id = createdById;
-		data.created_by_account_type = "admin";
-
-
-        const response = await axios.post(`${apiUrl}/admin/schoolRegistration/`, data, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-				open=false
-				window.location.reload();
-        console.log(response.data); // Handle response data as needed
-    } catch (error) {
-        console.error('Error:');
-    }
-}
+			const response = await axios.post(`${apiUrl}/admin/schoolRegistration/`, data, {
+				headers: {
+					Authorization: `Bearer ${token}`
+				}
+			});
+			open = false;
+			window.location.reload();
+			console.log(response.data); // Handle response data as needed
+		} catch (error) {
+			console.error('Error:');
+		}
+	}
 
 	function init(form: HTMLFormElement) {
 		if (data?.name) [data.first_name, data.last_name] = data.name.split(' ');
@@ -109,18 +113,15 @@
 			if (el) el.value = data[key];
 		}
 	}
-	;
-
-
 	onMount(async () => {
-  // Retrieve the token from session storage
-  //const token = sessionStorage.getItem('token');
+		// Retrieve the token from session storage
+		//const token = sessionStorage.getItem('token');
 
-  token = getCookie('token');
-  console.log("token",token);
-  let alltag_api = apiUrl + '/admin/tags/';
-  let allteacher_api = apiUrl + '/admin/allteacherData/';
-  const responseteacher = await axios.get(allteacher_api, {
+		token = getCookie('token');
+		console.log('token', token);
+		let alltag_api = apiUrl + '/admin/tags/';
+		let allteacher_api = apiUrl + '/admin/allteacherData/';
+		const responseteacher = await axios.get(allteacher_api, {
 			headers: {
 				Authorization: `Bearer ${token}`
 			}
@@ -134,11 +135,8 @@
 			}
 		});
 		tagData = responsetags.data.result;
-		console.log("This is tag data", tagData);
-
-
-
-});
+		console.log('This is tag data', tagData);
+	});
 </script>
 
 <Modal
@@ -153,10 +151,14 @@
 			<div class="grid grid-cols-6 gap-6">
 				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>Name</span>
-					<Input bind:value={data.name} name="name" class="border outline-none" placeholder="e.g. Bonnie" required />
+					<Input
+						bind:value={data.name}
+						name="name"
+						class="border outline-none"
+						placeholder="e.g. Bonnie"
+						required
+					/>
 				</Label>
-
-
 
 				<!-- <Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>Total Students</span>
@@ -169,7 +171,7 @@
 					/>
 				</Label> -->
 
-                <!-- <Label class="col-span-6 space-y-2 sm:col-span-3">
+				<!-- <Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>Location</span>
 					<Input
 					bind:value={data.location}
@@ -179,20 +181,20 @@
 						placeholder="e.g. bonnie@flowbite.com"
 					/>
 				</Label> -->
-                <Label class="col-span-6 space-y-2 sm:col-span-3">
+				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>Established Year</span>
 					<Input
-					bind:value={data.established_year}
+						bind:value={data.established_year}
 						name="student_id"
 						type="text"
 						class="border outline-none"
 						placeholder="e.g. bonnie@flowbite.com"
 					/>
 				</Label>
-                <Label class="col-span-6 space-y-2 sm:col-span-3">
+				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>Motto</span>
 					<Input
-					bind:value={data.motto}
+						bind:value={data.motto}
 						name="student_id"
 						type="text"
 						class="border outline-none"
@@ -202,7 +204,7 @@
 				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>Email</span>
 					<Input
-					bind:value={data.email}
+						bind:value={data.email}
 						name="student_id"
 						type="email"
 						class="border outline-none"
@@ -212,7 +214,7 @@
 				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>Contact Number</span>
 					<Input
-					bind:value={data.contact_number}
+						bind:value={data.contact_number}
 						name="student_id"
 						type="text"
 						class="border outline-none"
@@ -222,7 +224,7 @@
 				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>School Code</span>
 					<Input
-					bind:value={data.school_code}
+						bind:value={data.school_code}
 						name="student_id"
 						type="text"
 						class="border outline-none"
@@ -232,7 +234,7 @@
 				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>About Us</span>
 					<Input
-					bind:value={data.about_us}
+						bind:value={data.about_us}
 						name="student_id"
 						type="text"
 						class="border outline-none"
@@ -242,7 +244,7 @@
 				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>Website Url</span>
 					<Input
-					bind:value={data.websiteUrl}
+						bind:value={data.websiteUrl}
 						name="student_id"
 						type="text"
 						class="border outline-none"
@@ -252,7 +254,7 @@
 				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>Address Line 1</span>
 					<Input
-					bind:value={data.address_line_1}
+						bind:value={data.address_line_1}
 						name="student_id"
 						type="text"
 						class="border outline-none"
@@ -262,7 +264,7 @@
 				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>Address Line 2</span>
 					<Input
-					bind:value={data.address_line_2}
+						bind:value={data.address_line_2}
 						name="student_id"
 						type="text"
 						class="border outline-none"
@@ -272,7 +274,7 @@
 				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>Zip Code</span>
 					<Input
-					bind:value={data.zipcode}
+						bind:value={data.zipcode}
 						name="student_id"
 						type="text"
 						class="border outline-none"
@@ -282,7 +284,7 @@
 				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>City</span>
 					<Input
-					bind:value={data.city}
+						bind:value={data.city}
 						name="student_id"
 						type="text"
 						class="border outline-none"
@@ -292,7 +294,7 @@
 				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>Country</span>
 					<Input
-					bind:value={data.country}
+						bind:value={data.country}
 						name="student_id"
 						type="text"
 						class="border outline-none"
@@ -303,26 +305,36 @@
 				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>Creator Teacher</span>
 					<div class="pt-5">
-						<Button>{teacher_label}<ChevronDownOutline class="w-6 h-6 ms-2 text-white dark:text-white" /></Button>
-						<Dropdown class="overflow-y-auto max-h-80">
-
+						<Button
+							>{teacher_label}<ChevronDownOutline
+								class="ms-2 h-6 w-6 text-white dark:text-white"
+							/></Button
+						>
+						<Dropdown class="max-h-80 overflow-y-auto">
 							{#each teacherData as teacher}
-								<DropdownItem on:click={() => handleTeacherSelect(teacher.id, teacher.name)}>{teacher.name}, {teacher.teacher_designation}</DropdownItem>
+								<DropdownItem on:click={() => handleTeacherSelect(teacher.id, teacher.name)}
+									>{teacher.name}, {teacher.teacher_designation}</DropdownItem
+								>
 							{/each}
 						</Dropdown>
 					</div>
 				</Label>
 
-
-
 				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>Tags</span>
 					<div class="pt-5">
-						<Button>{tag_label}<ChevronDownOutline class="w-6 h-6 ms-2 text-white dark:text-white" /></Button>
-						<Dropdown class="overflow-y-auto max-h-80 w-44 p-3 space-y-3 text-sm">
+						<Button
+							>{tag_label}<ChevronDownOutline
+								class="ms-2 h-6 w-6 text-white dark:text-white"
+							/></Button
+						>
+						<Dropdown class="max-h-80 w-44 space-y-3 overflow-y-auto p-3 text-sm">
 							{#each tagData as tag}
 								<li>
-									<Checkbox checked={tagArray.some(t => t.tagId === tag.id)} on:change={() => handleTagSelect(tag.id, tag.name)}>
+									<Checkbox
+										checked={tagArray.some((t) => t.tagId === tag.id)}
+										on:change={() => handleTagSelect(tag.id, tag.name)}
+									>
 										{tag.name}
 									</Checkbox>
 								</li>
@@ -330,17 +342,12 @@
 						</Dropdown>
 					</div>
 				</Label>
-
-
-
-
-
 			</div>
 		</form>
 	</div>
 
 	<!-- Modal footer -->
 	<div slot="footer">
-		<Button on:click = {handleSubmit}>{Object.keys(data).length ? 'Save all' : 'Add student'}</Button>
+		<Button on:click={handleSubmit}>{Object.keys(data).length ? 'Save all' : 'Add student'}</Button>
 	</div>
 </Modal>

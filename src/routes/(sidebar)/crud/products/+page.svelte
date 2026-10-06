@@ -26,144 +26,138 @@
 		hidden = !hidden;
 	};
 	function getCookie(name) {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.startsWith(name + '=')) {
-        return cookie.substring(name.length + 1);
-      }
-    }
-    return null;
-  }
-  function setCookie(name, value, days) {
-    let expires = "";
-    if (days) {
-      let date = new Date();
-      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-      expires = "; expires=" + date.toUTCString();
-    }
-    document.cookie = name + "=" + (value || "") + expires + "; path=/";
-  }
-  const BASE_URL = process.env.VITE_API_URL+'';
+		const cookies = document.cookie.split(';');
+		for (let i = 0; i < cookies.length; i++) {
+			const cookie = cookies[i].trim();
+			if (cookie.startsWith(name + '=')) {
+				return cookie.substring(name.length + 1);
+			}
+		}
+		return null;
+	}
+	function setCookie(name, value, days) {
+		let expires = '';
+		if (days) {
+			let date = new Date();
+			date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+			expires = '; expires=' + date.toUTCString();
+		}
+		document.cookie = name + '=' + (value || '') + expires + '; path=/';
+	}
+	const BASE_URL = process.env.VITE_API_URL + '';
 
-// Define userData variable
-let userData = [];
-let postData = [];
-// Function to fetch all user data
-const fetchAllUserData = async (token) => {
-  try {
-	// Make a GET request to the endpoint with the Authorization header
-	const response = await axios.get(`${BASE_URL}/admin/allpostData`, {
-	  headers: {
-		Authorization: `Bearer ${token}`
-	  }
+	// Define userData variable
+	let userData = [];
+	let postData = [];
+	// Function to fetch all user data
+	const fetchAllUserData = async (token) => {
+		try {
+			// Make a GET request to the endpoint with the Authorization header
+			const response = await axios.get(`${BASE_URL}/admin/allpostData`, {
+				headers: {
+					Authorization: `Bearer ${token}`
+				}
+			});
+
+			// Update postData with response data
+			postData = response.data.result;
+		} catch (error) {
+			// Log and handle errors
+			console.error('Error fetching user data:');
+		}
+	};
+
+	const BASE_URL_refreshtoken = process.env.VITE_API_URL + '';
+
+	// Function to get refresh token
+	const getRefreshToken = async () => {
+		try {
+			// Retrieve token and refresh token from session storage
+			const token = sessionStorage.getItem('token');
+			const refreshToken = sessionStorage.getItem('refreshToken');
+
+			// Check if both token and refresh token exist
+			if (!token || !refreshToken) {
+				throw new Error('Token or refresh token not found in session storage.');
+			}
+
+			// Make a POST request to the refreshToken endpoint with the token and refresh token
+			console.log(token);
+			console.log(refreshToken);
+			const response = await axios.post(
+				`${BASE_URL_refreshtoken}/admin/refreshToken/`,
+				{
+					token,
+					refreshToken
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${token}`
+					}
+				}
+			);
+			const { token: newToken, refreshToken: newRefreshToken } = response.data.result;
+			// Return the response data
+			console.log(response.data);
+			return { newToken, newRefreshToken };
+		} catch (error) {
+			// Log and handle errors
+			console.error('Error refreshing token:');
+			throw error;
+		}
+	};
+
+	const updateTokens = async () => {
+		try {
+			const { newToken, newRefreshToken } = await getRefreshToken();
+			console.log('New token:', newToken);
+			console.log('New refresh token:', newRefreshToken);
+
+			// Set the new token and refresh token to session storage
+			//sessionStorage.setItem('token', newToken);
+			//sessionStorage.setItem('refreshToken', newRefreshToken);
+			setCookie('token', newToken, 7);
+			setCookie('refreshToken', newRefreshToken, 7);
+		} catch (error) {
+			// Handle errors
+			console.error('Error:');
+		}
+	};
+
+	const startPolling = () => {
+		//updateTokens(); // Initial call
+		setInterval(updateTokens, 10000); // Poll every 5 seconds
+	};
+
+	// Call fetchAllUserData on component mount
+	onMount(async () => {
+		// Retrieve the token from session storage
+		//const token = sessionStorage.getItem('token');
+
+		const token = getCookie('token');
+		console.log('token', token);
+
+		//const sessionData = sessionStorage.getItem('key');
+		// console.log(sessionData);
+
+		// If token exists, call fetchAllUserData
+		if (token) {
+			await fetchAllUserData(token);
+		} else {
+			console.error('Token not found in session storage.');
+		}
+
+		console.log('GG');
+		startPolling();
 	});
 
-	// Update postData with response data
-	postData = response.data.result;
-  } catch (error) {
-	// Log and handle errors
-	console.error('Error fetching user data:');
-  }
-};
-
-
-const BASE_URL_refreshtoken = process.env.VITE_API_URL+'';
-
-// Function to get refresh token
-const getRefreshToken = async () => {
-    try {
-        // Retrieve token and refresh token from session storage
-        const token = sessionStorage.getItem('token');
-        const refreshToken = sessionStorage.getItem('refreshToken');
-
-        // Check if both token and refresh token exist
-        if (!token || !refreshToken) {
-            throw new Error('Token or refresh token not found in session storage.');
-        }
-
-        // Make a POST request to the refreshToken endpoint with the token and refresh token
-		console.log(token);
-		console.log(refreshToken);
-        const response = await axios.post(`${BASE_URL_refreshtoken}/admin/refreshToken/`, {
-            token,
-            refreshToken
-        }, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-		const { token: newToken, refreshToken: newRefreshToken } = response.data.result;
-        // Return the response data
-		console.log(response.data);
-        return { newToken, newRefreshToken };
-    } catch (error) {
-        // Log and handle errors
-        console.error('Error refreshing token:');
-        throw error;
-    }
-};
-
-const updateTokens = async () => {
-    try {
-        const { newToken, newRefreshToken } = await getRefreshToken();
-        console.log('New token:', newToken);
-        console.log('New refresh token:', newRefreshToken);
-
-        // Set the new token and refresh token to session storage
-        //sessionStorage.setItem('token', newToken);
-        //sessionStorage.setItem('refreshToken', newRefreshToken);
-		setCookie('token', newToken, 7);
-		setCookie('refreshToken', newRefreshToken, 7);
-
-
-
-
-    } catch (error) {
-        // Handle errors
-        console.error('Error:');
-    }
-};
-
-const startPolling = () => {
-
-//updateTokens(); // Initial call
-setInterval(updateTokens, 10000); // Poll every 5 seconds
-};
-
-
-
-// Call fetchAllUserData on component mount
-onMount(async () => {
-  // Retrieve the token from session storage
-  //const token = sessionStorage.getItem('token');
-
-  const token = getCookie('token');
-  console.log("token",token);
-
-  //const sessionData = sessionStorage.getItem('key');
- // console.log(sessionData);
-
-  // If token exists, call fetchAllUserData
-  if (token) {
-	await fetchAllUserData(token);
-  } else {
-	console.error('Token not found in session storage.');
-  }
-
-  console.log("GG");
-  startPolling();
-});
-
-
 	const path: string = '/crud/products';
-  const description: string = 'CRUD products examaple - Octobrain Admin Dashboard';
-  const title: string = 'Octobrain Admin Dashboard - CRUD Products';
-  const subtitle: string = 'CRUD Products';
+	const description: string = 'CRUD products examaple - Octobrain Admin Dashboard';
+	const title: string = 'Octobrain Admin Dashboard - CRUD Products';
+	const subtitle: string = 'CRUD Products';
 </script>
 
 <MetaTag {path} {description} {title} {subtitle} />
-
 
 <main class="relative h-full w-full overflow-y-auto bg-white dark:bg-gray-800">
 	<div class="p-4">
@@ -204,14 +198,17 @@ onMount(async () => {
 			</ToolbarButton> -->
 
 			<div slot="end" class="space-x-2">
-				<Button class="whitespace-nowrap" on:click={() => ((current_user = {}), (updateUser = true))}>Add new Post</Button>
+				<Button
+					class="whitespace-nowrap"
+					on:click={() => ((current_user = {}), (updateUser = true))}>Add new Post</Button
+				>
 			</div>
 		</Toolbar>
 	</div>
 	<Table>
 		<TableHead class="border-y border-gray-200 bg-gray-100 dark:border-gray-700">
 			<!-- <TableHeadCell class="w-4 p-4"><Checkbox /></TableHeadCell> -->
-			{#each ['Post Title', 'Post Content',  'Actions'] as title}
+			{#each ['Post Title', 'Post Content', 'Actions'] as title}
 				<TableHeadCell class="ps-4 font-normal">{title}</TableHeadCell>
 			{/each}
 		</TableHead>
@@ -224,7 +221,6 @@ onMount(async () => {
 							<div class="text-base font-semibold text-gray-900 dark:text-white">
 								{post.title}
 							</div>
-
 						</div>
 					</TableBodyCell>
 
@@ -234,10 +230,19 @@ onMount(async () => {
 					>
 
 					<TableBodyCell class="space-x-2">
-						<Button size="sm" class="gap-2 px-3" on:click={() => ((current_user = post), (openUser = true))}>
+						<Button
+							size="sm"
+							class="gap-2 px-3"
+							on:click={() => ((current_user = post), (openUser = true))}
+						>
 							<EditOutline size="sm" /> Update
 						</Button>
-						<Button color="red" size="sm" class="gap-2 px-3" on:click={() => ((current_user = post), (openDelete = true))}>
+						<Button
+							color="red"
+							size="sm"
+							class="gap-2 px-3"
+							on:click={() => ((current_user = post), (openDelete = true))}
+						>
 							<TrashBinSolid size="sm" /> Delete Post
 						</Button>
 					</TableBodyCell>
@@ -251,5 +256,5 @@ onMount(async () => {
 	<svelte:component this={drawerComponent} bind:hidden />
 </Drawer>
 <Postupdate bind:open={openUser} data={current_user} />
-<Addnewpost bind:open={updateUser} data={current_user}/>
-<Delete bind:open={openDelete} data={current_user}/>
+<Addnewpost bind:open={updateUser} data={current_user} />
+<Delete bind:open={openDelete} data={current_user} />

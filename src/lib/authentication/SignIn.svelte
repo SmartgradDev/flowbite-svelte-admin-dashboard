@@ -27,7 +27,11 @@
 <main class={mainClass}>
 	<div class={mainDivClass}>
 		<a href={site.link} class={siteLinkClass}>
-			<img src={"https://cvanalyzersmartgrad.blob.core.windows.net/tempphotos/9.png"} class={siteImgClass} alt={"octobrain-logo"} />
+			<img
+				src={'https://cvanalyzersmartgrad.blob.core.windows.net/tempphotos/9.png'}
+				class={siteImgClass}
+				alt={'octobrain-logo'}
+			/>
 			<span>Octobrain Admin Panel</span>
 		</a>
 		<!-- Card -->

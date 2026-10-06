@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Label, Input } from 'flowbite-svelte';
 	import { SignIn } from '$lib';
-  import MetaTag from '../utils/MetaTag.svelte';
+	import MetaTag from '../utils/MetaTag.svelte';
 	let title = 'Sign in to platform';
 	let site = {
 		name: 'Flowbite',
@@ -18,66 +18,65 @@
 	let createAccountTitle = 'Create account';
 
 	function setCookie(name, value, days) {
-    let expires = "";
-    if (days) {
-      let date = new Date();
-      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-      expires = "; expires=" + date.toUTCString();
-    }
-    document.cookie = name + "=" + (value || "") + expires + "; path=/";
-  }
+		let expires = '';
+		if (days) {
+			let date = new Date();
+			date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+			expires = '; expires=' + date.toUTCString();
+		}
+		document.cookie = name + '=' + (value || '') + expires + '; path=/';
+	}
 
 	const onSubmit = async (e: Event) => {
-    e.preventDefault();
+		e.preventDefault();
 
-    const formData = new FormData(e.target as HTMLFormElement);
+		const formData = new FormData(e.target as HTMLFormElement);
 
-    const data: Record<string, string | File> = {};
-    for (const field of formData.entries()) {
-        const [key, value] = field;
-        // Exclude fields that are not needed for login
-        if (key === 'email' || key === 'password') {
-            data[key] = value;
-        }
-	console.log(data);
-    }
+		const data: Record<string, string | File> = {};
+		for (const field of formData.entries()) {
+			const [key, value] = field;
+			// Exclude fields that are not needed for login
+			if (key === 'email' || key === 'password') {
+				data[key] = value;
+			}
+			console.log(data);
+		}
 		//gg
 
-    try {
-        const response = await fetch(process.env.VITE_API_URL+'/admin/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
+		try {
+			const response = await fetch(process.env.VITE_API_URL + '/admin/login', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(data)
+			});
 
-        if (!response.ok) {
-            throw new Error('Login failed');
-        }
+			if (!response.ok) {
+				throw new Error('Login failed');
+			}
 
-        const responseData = await response.json();
+			const responseData = await response.json();
 
-        // Store token and refresh token in session storage
-       // sessionStorage.setItem('token', responseData.result.token);
-       // sessionStorage.setItem('refreshToken', responseData.result.refreshToken);
-		setCookie('token', responseData.result.token, 7);
-		setCookie('refreshToken', responseData.result.refreshToken, 7);
+			// Store token and refresh token in session storage
+			// sessionStorage.setItem('token', responseData.result.token);
+			// sessionStorage.setItem('refreshToken', responseData.result.refreshToken);
+			setCookie('token', responseData.result.token, 7);
+			setCookie('refreshToken', responseData.result.refreshToken, 7);
 
-        // Redirect or perform other actions upon successful login
-        console.log('Login successful');
-        console.log('User:', responseData.result.user);
-		window.location.href = "/crud/users";
-    } catch (error) {
-        console.error('Login error:');
-    }
-};
-
+			// Redirect or perform other actions upon successful login
+			console.log('Login successful');
+			console.log('User:', responseData.result.user);
+			window.location.href = '/crud/users';
+		} catch (error) {
+			console.error('Login error:');
+		}
+	};
 
 	const path: string = '/authentication/sign-in';
-  const description: string = 'Sign in example - Octobrain Admin Dashboard';
+	const description: string = 'Sign in example - Octobrain Admin Dashboard';
 	const metaTitle: string = 'Octobrain Admin Dashboard - Sign in';
-  const subtitle: string = 'Sign in';
+	const subtitle: string = 'Sign in';
 </script>
 
 <MetaTag {path} {description} title={metaTitle} {subtitle} />

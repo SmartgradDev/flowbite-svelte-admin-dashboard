@@ -5,9 +5,9 @@
 	export let data: PageData;
 
 	const path: string = '/layouts/sidebar';
-  const description: string = 'Sidebar layout examaple - Octobrain Admin Dashboard';
-  const title: string = 'Octobrain Admin Dashboard - Sidebar Layout';
-  const subtitle: string = 'Sidebar Layout';
+	const description: string = 'Sidebar layout examaple - Octobrain Admin Dashboard';
+	const title: string = 'Octobrain Admin Dashboard - Sidebar Layout';
+	const subtitle: string = 'Sidebar Layout';
 </script>
 
 <MetaTag {path} {description} {title} {subtitle} />

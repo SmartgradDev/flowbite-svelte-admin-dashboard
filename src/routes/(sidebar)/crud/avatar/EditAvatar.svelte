@@ -1,83 +1,86 @@
 <script lang="ts">
-	import { Button, Input, Label, Modal, Textarea,Dropdown, DropdownItem, DropdownDivider, DropdownHeader } from 'flowbite-svelte';
+	import {
+		Button,
+		Input,
+		Label,
+		Modal,
+		Textarea,
+		Dropdown,
+		DropdownItem,
+		DropdownDivider,
+		DropdownHeader
+	} from 'flowbite-svelte';
 	import { ChevronDownOutline } from 'flowbite-svelte-icons';
 	import axios from 'axios';
-	import { onMount, afterUpdate} from 'svelte';
+	import { onMount, afterUpdate } from 'svelte';
 	export let open: boolean = false; // modal control
 
 	export let data: Record<string, string> = {};
 
 	const apiUrl = process.env.VITE_API_URL;
 	let schoolData = [];
-	let student_medium_label="Account Type";
-	let is_admin_label="Is Admin";
+	let student_medium_label = 'Account Type';
+	let is_admin_label = 'Is Admin';
 	let inputValue;
 	let token;
-	let user_label = "Select School";
-	const handleSchoolSelect = (id,name) => {
-	user_label=name
-	data.schoolId=id
-	data.schoolName = name
-}
+	let user_label = 'Select School';
+	const handleSchoolSelect = (id, name) => {
+		user_label = name;
+		data.schoolId = id;
+		data.schoolName = name;
+	};
 	function getCookie(name) {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.startsWith(name + '=')) {
-        return cookie.substring(name.length + 1);
-      }
-    }
-    return null;
-  }
-
-
-  function handleStudentMediumChange(event) {
-	console.log("________event:::::")
-	console.log(event)
-    data.student_medium_of_education = event;
-		// console.log(data)
-		if(event==="Bangla"){
-			student_medium_label="Bangla";
-		}else{
-			student_medium_label="English";
+		const cookies = document.cookie.split(';');
+		for (let i = 0; i < cookies.length; i++) {
+			const cookie = cookies[i].trim();
+			if (cookie.startsWith(name + '=')) {
+				return cookie.substring(name.length + 1);
+			}
 		}
-  }
+		return null;
+	}
 
+	function handleStudentMediumChange(event) {
+		console.log('________event:::::');
+		console.log(event);
+		data.student_medium_of_education = event;
+		// console.log(data)
+		if (event === 'Bangla') {
+			student_medium_label = 'Bangla';
+		} else {
+			student_medium_label = 'English';
+		}
+	}
 
 	function handleIsAdminChange(event) {
-	// console.log(event)
-    data.is_admin = event;
+		// console.log(event)
+		data.is_admin = event;
 		// console.log(data)
-		if(event==="true"){
-			is_admin_label="True";
-		}else{
-			is_admin_label="False";
+		if (event === 'true') {
+			is_admin_label = 'True';
+		} else {
+			is_admin_label = 'False';
 		}
-  }
+	}
 
+	async function handleSubmit() {
+		// Assuming `token` is defined somewhere accessible
 
-  async function handleSubmit() {
-    // Assuming `token` is defined somewhere accessible
+		// Assuming `data` contains the payload you want to send in the request
 
-
-    // Assuming `data` contains the payload you want to send in the request
-
-
-    try {
-        const response = await axios.patch(`${apiUrl}/admin/avatarUpdate/`, data, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-		open=false
-		window.location.reload();
-        console.log(response.data); // Handle response data as needed
-    } catch (error) {
-        console.error('Error:');
-    }
-}
-
-
+		try {
+			const response = await axios.patch(`${apiUrl}/admin/avatarUpdate/`, data, {
+				headers: {
+					Authorization: `Bearer ${token}`
+				}
+			});
+			open = false;
+			window.location.reload();
+			console.log(response.data); // Handle response data as needed
+		} catch (error) {
+			console.error('Error:');
+		}
+	}
 
 	function init(form: HTMLFormElement) {
 		if (data?.name) [data.first_name, data.last_name] = data.name.split(' ');
@@ -90,33 +93,24 @@
 	1;
 
 	onMount(async () => {
-  // Retrieve the token from session storage
-  //const token = sessionStorage.getItem('token');
+		// Retrieve the token from session storage
+		//const token = sessionStorage.getItem('token');
 
-  token = getCookie('token');
-  // console.log("token",token);
-  // const response= await axios.get(`${apiUrl}/admin/allschoolData/`, {
-  //           headers: {
-  //               Authorization: `Bearer ${token}`
-  //           }
-  //       });
-	// 			schoolData=response.data.result
-	// 			console.log(schoolData)
-
-
-
-});
-
-
-
-
+		token = getCookie('token');
+		// console.log("token",token);
+		// const response= await axios.get(`${apiUrl}/admin/allschoolData/`, {
+		//           headers: {
+		//               Authorization: `Bearer ${token}`
+		//           }
+		//       });
+		// 			schoolData=response.data.result
+		// 			console.log(schoolData)
+	});
 </script>
 
 <Modal
 	bind:open
-
 	title={Object.keys(data).length ? 'Edit Avatar' : 'Add new Avatar'}
-
 	size="md"
 	class="m-4"
 >
@@ -126,20 +120,20 @@
 			<div class="grid grid-cols-6 gap-6">
 				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>Name</span>
-					<Input bind:value={data.name} name="name" class="border outline-none" placeholder="e.g. Bonnie" required />
+					<Input
+						bind:value={data.name}
+						name="name"
+						class="border outline-none"
+						placeholder="e.g. Bonnie"
+						required
+					/>
 				</Label>
-
-
-
-
-
-
 			</div>
 		</form>
 	</div>
 
 	<!-- Modal footer -->
 	<div slot="footer">
-		<Button on:click = {handleSubmit}>{Object.keys(data).length ? 'Save all' : 'Add user'}</Button>
+		<Button on:click={handleSubmit}>{Object.keys(data).length ? 'Save all' : 'Add user'}</Button>
 	</div>
 </Modal>

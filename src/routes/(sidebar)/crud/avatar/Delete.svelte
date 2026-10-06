@@ -6,50 +6,44 @@
 	export let open: boolean = false; // modal control
 	export let data: Record<string, string> = {};
 	let token;
-  const apiUrl = process.env.VITE_API_URL;
-
+	const apiUrl = process.env.VITE_API_URL;
 
 	function getCookie(name) {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.startsWith(name + '=')) {
-        return cookie.substring(name.length + 1);
-      }
-    }
-    return null;
-  }
+		const cookies = document.cookie.split(';');
+		for (let i = 0; i < cookies.length; i++) {
+			const cookie = cookies[i].trim();
+			if (cookie.startsWith(name + '=')) {
+				return cookie.substring(name.length + 1);
+			}
+		}
+		return null;
+	}
 	async function handleSubmit() {
-    // Assuming `token` is defined somewhere accessible
+		// Assuming `token` is defined somewhere accessible
 
+		// Assuming `data` contains the payload you want to send in the request
 
-    // Assuming `data` contains the payload you want to send in the request
+		try {
+			const response = await axios.delete(`${apiUrl}/admin/deleteAvatarById?id=` + data?.id, {
+				headers: {
+					Authorization: `Bearer ${token}`
+				}
+			});
+			open = false;
+			window.location.reload();
+			console.log(response.data); // Handle response data as needed
+		} catch (error) {
+			console.error('Error:');
+		}
+	}
 
+	onMount(async () => {
+		// Retrieve the token from session storage
+		//const token = sessionStorage.getItem('token');
 
-    try {
-        const response = await axios.delete(`${apiUrl}/admin/deleteAvatarById?id=`+data?.id,  {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-        open=false
-        window.location.reload();
-        console.log(response.data); // Handle response data as needed
-    } catch (error) {
-        console.error('Error:');
-    }
-}
-
-
-onMount(async () => {
-  // Retrieve the token from session storage
-  //const token = sessionStorage.getItem('token');
-
-  token = getCookie('token');
-  console.log("token",token);
-
-
-});
+		token = getCookie('token');
+		console.log('token', token);
+	});
 </script>
 
 <Modal bind:open size="sm">
@@ -60,7 +54,7 @@ onMount(async () => {
 	</h3>
 
 	<div class="flex items-center justify-center">
-		<Button on:click = {handleSubmit}  color="red" class="mr-2">Yes, I'm sure</Button>
+		<Button on:click={handleSubmit} color="red" class="mr-2">Yes, I'm sure</Button>
 		<Button color="alternative" on:click={() => (open = false)}>No, cancel</Button>
 	</div>
 </Modal>

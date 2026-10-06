@@ -65,7 +65,9 @@
 		{/each}
 
 		<div slot="footer" role="none">
-			<DropdownItem class="font-normal" href="#" on:click={handleCustomClick}>Custom...</DropdownItem>
+			<DropdownItem class="font-normal" href="#" on:click={handleCustomClick}
+				>Custom...</DropdownItem
+			>
 		</div>
 	</Dropdown>
 </div>

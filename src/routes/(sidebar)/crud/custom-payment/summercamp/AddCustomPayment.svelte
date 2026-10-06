@@ -1,5 +1,16 @@
 <script lang="ts">
-	import { Button, Input, Label, Modal, Textarea, Dropdown, DropdownItem, DropdownHeader, Toggle, Select } from 'flowbite-svelte';
+	import {
+		Button,
+		Input,
+		Label,
+		Modal,
+		Textarea,
+		Dropdown,
+		DropdownItem,
+		DropdownHeader,
+		Toggle,
+		Select
+	} from 'flowbite-svelte';
 	import { ChevronDownOutline } from 'flowbite-svelte-icons';
 	import axios from 'axios';
 	import { onMount } from 'svelte';
@@ -29,7 +40,7 @@
 	}
 
 	async function handleSubmit() {
-		console.log("Inside submit");
+		console.log('Inside submit');
 		console.log(data);
 		console.log(token);
 
@@ -77,27 +88,15 @@
 <Modal bind:open size="md" autoclose={false} class="w-full">
 	<form class="flex flex-col space-y-6" action="#" use:init>
 		<h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Add New Custom Payment</h3>
-		
+
 		<Label class="space-y-2">
 			<span>Name</span>
-			<Input
-				type="text"
-				name="name"
-				bind:value={data.name}
-				placeholder="Enter name"
-				required
-			/>
+			<Input type="text" name="name" bind:value={data.name} placeholder="Enter name" required />
 		</Label>
 
 		<Label class="space-y-2">
 			<span>Email</span>
-			<Input
-				type="email"
-				name="email"
-				bind:value={data.email}
-				placeholder="Enter email"
-				required
-			/>
+			<Input type="email" name="email" bind:value={data.email} placeholder="Enter email" required />
 		</Label>
 
 		<Label class="space-y-2">
@@ -189,22 +188,12 @@
 
 		<Label class="space-y-2">
 			<span>Age</span>
-			<Input
-				type="number"
-				name="age"
-				bind:value={data.age}
-				placeholder="Enter age"
-			/>
+			<Input type="number" name="age" bind:value={data.age} placeholder="Enter age" />
 		</Label>
 
 		<Label class="space-y-2">
 			<span>Venue</span>
-			<Select
-				items={venues}
-				name="venue"
-				bind:value={data.venue}
-				placeholder="Select venue"
-			/>
+			<Select items={venues} name="venue" bind:value={data.venue} placeholder="Select venue" />
 		</Label>
 
 		<Label class="space-y-2">

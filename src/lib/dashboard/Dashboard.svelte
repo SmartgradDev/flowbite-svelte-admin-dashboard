@@ -23,11 +23,11 @@
 	chartOptions.series = data.series;
 
 	let dark = false;
-	
+
 	// Student Weekly Stats
 	let studentCount = 0;
 	let percentageGain = 0;
-	
+
 	// Teacher Weekly Stats
 	let teacherCount = 0;
 	let percentageGainTeacher = 0;
@@ -119,7 +119,7 @@
 	// Reactive statement to apply dark/light theme mode on all charts reactively
 	$: {
 		const mode = dark ? 'dark' : 'light';
-		
+
 		thickbars.theme = { mode };
 		thickbars_teacher.theme = { mode };
 		thinfillbarsStudents.theme = { mode };
@@ -178,7 +178,7 @@
 			// Recreate options keeping current series/categories
 			const savedSeries = chartOptions.series;
 			const savedCategories = chartOptions.xaxis?.categories;
-			
+
 			chartOptions = chart_options_func(dark);
 			chartOptions.series = savedSeries;
 			if (chartOptions.xaxis) {
@@ -197,9 +197,9 @@
 			const json = await response.json();
 			const { currentPeriod, previousPeriod } = json.result;
 
-			const currentData = currentPeriod.map(item => item.y);
-			const previousData = previousPeriod.map(item => item.y);
-			const categories = currentPeriod.map(item => item.x);
+			const currentData = currentPeriod.map((item) => item.y);
+			const previousData = previousPeriod.map((item) => item.y);
+			const categories = currentPeriod.map((item) => item.x);
 
 			chartOptions.series = [
 				{
@@ -267,7 +267,7 @@
 		try {
 			const response = await fetch(API_URL + `/admin/dailyGain?model=student&days=${days}`);
 			const json = await response.json();
-			thickbars.series[0].data = json.result.map(item => item.y);
+			thickbars.series[0].data = json.result.map((item) => item.y);
 			thickbars = { ...thickbars };
 		} catch (error) {
 			console.error('Failed to fetch weekly student gain graph:', error);
@@ -277,7 +277,7 @@
 		try {
 			const response = await fetch(API_URL + `/admin/dailyGain?model=teacher&days=${days}`);
 			const json = await response.json();
-			thickbars_teacher.series[0].data = json.result.map(item => item.y);
+			thickbars_teacher.series[0].data = json.result.map((item) => item.y);
 			thickbars_teacher = { ...thickbars_teacher };
 		} catch (error) {
 			console.error('Failed to fetch weekly teacher gain graph:', error);
@@ -287,7 +287,7 @@
 		try {
 			const response = await fetch(API_URL + `/admin/dailyGain?model=post&days=${days}`);
 			const json = await response.json();
-			thickbarsPost.series[0].data = json.result.map(item => item.y);
+			thickbarsPost.series[0].data = json.result.map((item) => item.y);
 			thickbarsPost = { ...thickbarsPost };
 		} catch (error) {
 			console.error('Failed to fetch daily post gain graph:', error);
@@ -297,7 +297,7 @@
 		try {
 			const response = await fetch(API_URL + `/admin/dailyGain?model=comment&days=${days}`);
 			const json = await response.json();
-			thickbarsComment.series[0].data = json.result.map(item => item.y);
+			thickbarsComment.series[0].data = json.result.map((item) => item.y);
 			thickbarsComment = { ...thickbarsComment };
 		} catch (error) {
 			console.error('Failed to fetch daily comment gain graph:', error);
@@ -307,7 +307,7 @@
 		try {
 			const response = await fetch(API_URL + `/admin/dailyGain?model=reaction&days=${days}`);
 			const json = await response.json();
-			thickbarsReaction.series[0].data = json.result.map(item => item.y);
+			thickbarsReaction.series[0].data = json.result.map((item) => item.y);
 			thickbarsReaction = { ...thickbarsReaction };
 		} catch (error) {
 			console.error('Failed to fetch daily reaction gain graph:', error);
@@ -317,7 +317,7 @@
 		try {
 			const response = await fetch(API_URL + '/admin/dailyGain?model=student&days=30');
 			const json = await response.json();
-			thinfillbarsStudents.series[0].data = json.result.map(item => item.y);
+			thinfillbarsStudents.series[0].data = json.result.map((item) => item.y);
 			thinfillbarsStudents = { ...thinfillbarsStudents };
 		} catch (error) {
 			console.error('Failed to fetch monthly student gain graph:', error);
@@ -327,7 +327,7 @@
 		try {
 			const response = await fetch(API_URL + '/admin/dailyGain?model=teacher&days=30');
 			const json = await response.json();
-			thinfillbarsTeachers.series[0].data = json.result.map(item => item.y);
+			thinfillbarsTeachers.series[0].data = json.result.map((item) => item.y);
 			thinfillbarsTeachers = { ...thinfillbarsTeachers };
 		} catch (error) {
 			console.error('Failed to fetch monthly teacher gain graph:', error);
@@ -337,7 +337,7 @@
 		try {
 			const response = await fetch(API_URL + '/admin/dailyGain?model=club&days=30');
 			const json = await response.json();
-			thinfillbarsClubs.series[0].data = json.result.map(item => item.y);
+			thinfillbarsClubs.series[0].data = json.result.map((item) => item.y);
 			thinfillbarsClubs = { ...thinfillbarsClubs };
 		} catch (error) {
 			console.error('Failed to fetch monthly club gain graph:', error);
@@ -347,7 +347,7 @@
 		try {
 			const response = await fetch(API_URL + '/admin/dailyGain?model=workshop&days=30');
 			const json = await response.json();
-			thinfillbarsWorkshops.series[0].data = json.result.map(item => item.y);
+			thinfillbarsWorkshops.series[0].data = json.result.map((item) => item.y);
 			thinfillbarsWorkshops = { ...thinfillbarsWorkshops };
 		} catch (error) {
 			console.error('Failed to fetch monthly workshop gain graph:', error);
@@ -360,19 +360,19 @@
 				fetch(API_URL + `/admin/dailyGain?model=workshop&days=${days}`),
 				fetch(API_URL + `/admin/dailyGain?model=event&days=${days}`)
 			]);
-			
+
 			const [clubsJson, workshopsJson, eventsJson] = await Promise.all([
 				clubsRes.json(),
 				workshopsRes.json(),
 				eventsRes.json()
 			]);
 
-			thinmultibarsOptions.series[0].data = clubsJson.result.map(item => item.y);
-			thinmultibarsOptions.series[1].data = workshopsJson.result.map(item => item.y);
-			thinmultibarsOptions.series[2].data = eventsJson.result.map(item => item.y);
-			
+			thinmultibarsOptions.series[0].data = clubsJson.result.map((item) => item.y);
+			thinmultibarsOptions.series[1].data = workshopsJson.result.map((item) => item.y);
+			thinmultibarsOptions.series[2].data = eventsJson.result.map((item) => item.y);
+
 			if (thinmultibarsOptions.xaxis) {
-				thinmultibarsOptions.xaxis.categories = clubsJson.result.map(item => item.x);
+				thinmultibarsOptions.xaxis.categories = clubsJson.result.map((item) => item.x);
 			}
 
 			thinmultibarsOptions = { ...thinmultibarsOptions };
@@ -390,12 +390,19 @@
 
 <div class="mt-px space-y-4">
 	<div class="grid gap-4 xl:grid-cols-2 2xl:grid-cols-3">
-		<ChartWidget bind:timeslot={timeslot} {chartOptions} title="{totalStudentCount} Students" subtitle="Total Number of Students" />
+		<ChartWidget
+			bind:timeslot
+			{chartOptions}
+			title="{totalStudentCount} Students"
+			subtitle="Total Number of Students"
+		/>
 		<Traffic {dark} />
 		<!-- <Stats /> -->
 	</div>
 	<div class="grid grid-cols-2 gap-4">
-		<div class="grid grid-cols-1 grid-rows-3 gap-4 xl:grid-cols-2 xl:grid-rows-3 2xl:grid-cols-2 2xl:grid-rows-3">
+		<div
+			class="grid grid-cols-1 grid-rows-3 gap-4 xl:grid-cols-2 xl:grid-rows-3 2xl:grid-cols-2 2xl:grid-rows-3"
+		>
 			<Card horizontal class="items-center justify-between" size="xl">
 				<div class="w-full">
 					<p>New students</p>
@@ -443,7 +450,12 @@
 					<p class="text-2xl font-bold leading-none text-gray-900 dark:text-white sm:text-3xl">
 						{currentMonthClubCount}
 					</p>
-					<Change size="sm" value={percentageGainClubMonth} since="Since last month" class="w-full" />
+					<Change
+						size="sm"
+						value={percentageGainClubMonth}
+						since="Since last month"
+						class="w-full"
+					/>
 				</div>
 				<Chart options={thinfillbarsClubs} class="w-full" />
 			</Card>
@@ -453,14 +465,19 @@
 					<p class="text-2xl font-bold leading-none text-gray-900 dark:text-white sm:text-3xl">
 						{currentMonthWorkshopCount}
 					</p>
-					<Change size="sm" value={percentageGainWorkshopMonth} since="Since last month" class="w-full" />
+					<Change
+						size="sm"
+						value={percentageGainWorkshopMonth}
+						since="Since last month"
+						class="w-full"
+					/>
 				</div>
 				<Chart options={thinfillbarsWorkshops} class="w-full" />
 			</Card>
 		</div>
-		<DesktopPc bind:timeslot={timeslot} options={thinmultibarsOptions} />
+		<DesktopPc bind:timeslot options={thinmultibarsOptions} />
 	</div>
-	<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+	<div class="grid grid-cols-1 gap-4 md:grid-cols-3">
 		<Card horizontal class="items-center justify-between" size="xl">
 			<div class="w-full">
 				<p>Posts Made</p>

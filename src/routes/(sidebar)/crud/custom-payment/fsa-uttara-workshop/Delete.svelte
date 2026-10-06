@@ -6,7 +6,7 @@
 
 	export let open: boolean = false; // modal control
 	export let data: Record<string, string> = {};
-	
+
 	let token;
 	const apiUrl = process.env.VITE_API_URL;
 
@@ -22,7 +22,7 @@
 	}
 
 	async function handleSubmit() {
-		console.log("Inside submit");
+		console.log('Inside submit');
 		console.log(data);
 		console.log(data.id);
 		console.log(token);

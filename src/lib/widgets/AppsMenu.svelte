@@ -15,31 +15,50 @@
 		GithubSolid
 	} from 'flowbite-svelte-icons';
 	function removeCookie(name) {
-    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-  }
-	const logout= ()=>{
-		removeCookie("token")
-		removeCookie("refreshToken")
-		goto("/authentication/sign-in")
+		document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
 	}
+	const logout = () => {
+		removeCookie('token');
+		removeCookie('refreshToken');
+		goto('/authentication/sign-in');
+	};
 	const menu = [
 		// { name: 'Sales', href: '/sales', icon: ShoppingBagSolid },
-		{ name: 'Admin', href: '/crud/users', icon: UsersGroupSolid,onClick:()=>{ return} },
+		{
+			name: 'Admin',
+			href: '/crud/users',
+			icon: UsersGroupSolid,
+			onClick: () => {
+				return;
+			}
+		},
 		// { name: 'Inbox', href: '/inbox', icon: InboxOutline },
 		// { name: 'Profile', href: '/profile', icon: ProfileCardOutline },
 		// { name: 'Settings', href: '/settings', icon: CogOutline },
-		{ name: 'Student', href: '/crud/students', icon: ArchiveSolid ,onClick:()=>{ return}},
+		{
+			name: 'Student',
+			href: '/crud/students',
+			icon: ArchiveSolid,
+			onClick: () => {
+				return;
+			}
+		},
 
-		{ name: 'Teacher', href: 'https://github.com/aukik/flowbite-svelte-admin-dashboard', icon: GithubSolid , onClick:()=>{ return}},
+		{
+			name: 'Teacher',
+			href: 'https://github.com/aukik/flowbite-svelte-admin-dashboard',
+			icon: GithubSolid,
+			onClick: () => {
+				return;
+			}
+		}
 		// { name: 'Pricing', href: '/pricing', icon: DollarOutline },
 		// { name: 'Billing', href: '/billing', icon: SalePercentOutline },
-	// 	{ name: 'Logout', href: '/authentication/sign-in', icon: ArrowRightToBracketOutline ,onClick:()=>{
-	// 		logout()
-	// 	}
-	// }
+		// 	{ name: 'Logout', href: '/authentication/sign-in', icon: ArrowRightToBracketOutline ,onClick:()=>{
+		// 		logout()
+		// 	}
+		// }
 	];
-
-
 </script>
 
 <ToolbarButton size="lg" class="-mx-0.5 hover:text-gray-900 dark:hover:text-white">

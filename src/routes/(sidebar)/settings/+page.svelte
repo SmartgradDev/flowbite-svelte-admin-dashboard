@@ -16,9 +16,9 @@
 	import MetaTag from '../../utils/MetaTag.svelte';
 
 	const path: string = '/settings';
-  const description: string = 'Settings examaple - Octobrain Admin Dashboard';
-  const title: string = 'Octobrain Admin Dashboard - Settings';
-  const subtitle: string = 'Settings';
+	const description: string = 'Settings examaple - Octobrain Admin Dashboard';
+	const title: string = 'Octobrain Admin Dashboard - Settings';
+	const subtitle: string = 'Settings';
 </script>
 
 <MetaTag {path} {description} {title} {subtitle} />

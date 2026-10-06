@@ -1,57 +1,62 @@
 <script lang="ts">
-	import { Button, Input, Label, Modal, Textarea,Dropdown, DropdownItem, DropdownDivider, DropdownHeader } from 'flowbite-svelte';
+	import {
+		Button,
+		Input,
+		Label,
+		Modal,
+		Textarea,
+		Dropdown,
+		DropdownItem,
+		DropdownDivider,
+		DropdownHeader
+	} from 'flowbite-svelte';
 	import { ChevronDownOutline } from 'flowbite-svelte-icons';
 	import axios from 'axios';
-	import { onMount, afterUpdate} from 'svelte';
+	import { onMount, afterUpdate } from 'svelte';
 	export let open: boolean = false; // modal control
 
 	export let data: Record<string, string> = {};
-	let user_label = "Select School";
-	let student_medium_label="Account Type";
-	let is_admin_label="Is Admin";
+	let user_label = 'Select School';
+	let student_medium_label = 'Account Type';
+	let is_admin_label = 'Is Admin';
 	let inputValue;
 	let token;
 	const apiUrl = process.env.VITE_API_URL;
 
 	function getCookie(name) {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.startsWith(name + '=')) {
-        return cookie.substring(name.length + 1);
-      }
-    }
-    return null;
-  }
+		const cookies = document.cookie.split(';');
+		for (let i = 0; i < cookies.length; i++) {
+			const cookie = cookies[i].trim();
+			if (cookie.startsWith(name + '=')) {
+				return cookie.substring(name.length + 1);
+			}
+		}
+		return null;
+	}
 
+	async function handleSubmit() {
+		// Assuming `token` is defined somewhere accessible
 
+		// Assuming `data` contains the payload you want to send in the request
+		console.log('Inside submit');
+		console.log(data);
+		console.log(data.id);
+		console.log(token);
+		data.user_type = 'student';
 
-  async function handleSubmit() {
-    // Assuming `token` is defined somewhere accessible
-    
-
-    // Assuming `data` contains the payload you want to send in the request
-    console.log("Inside submit");
-    console.log(data);
-    console.log(data.id);
-	console.log(token);
-	data.user_type = "student"
-
-    try {
-        const response = await axios.patch(`${apiUrl}/admin/sponsorUpdate/`, data, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-		open=false
-		window.location.reload();
-        console.log(response.data); // Handle response data as needed
-    } catch (error) {
-        console.error('Error:');
-    }
-}
-
-
+		try {
+			const response = await axios.patch(`${apiUrl}/admin/sponsorUpdate/`, data, {
+				headers: {
+					Authorization: `Bearer ${token}`
+				}
+			});
+			open = false;
+			window.location.reload();
+			console.log(response.data); // Handle response data as needed
+		} catch (error) {
+			console.error('Error:');
+		}
+	}
 
 	function init(form: HTMLFormElement) {
 		if (data?.name) [data.first_name, data.last_name] = data.name.split(' ');
@@ -64,49 +69,37 @@
 	1;
 
 	onMount(async () => {
-  // Retrieve the token from session storage
-  //const token = sessionStorage.getItem('token');
+		// Retrieve the token from session storage
+		//const token = sessionStorage.getItem('token');
 
-  token = getCookie('token');
-  console.log("token",token);
+		token = getCookie('token');
+		console.log('token', token);
+	});
 
-  
-
-
-});
-
-afterUpdate(() => {
+	afterUpdate(() => {
 		if (open && data.student_medium_of_education) {
-			if(data.student_medium_of_education === "Bangla"){
-				student_medium_label = "Bangla";
+			if (data.student_medium_of_education === 'Bangla') {
+				student_medium_label = 'Bangla';
 			} else {
-				student_medium_label = "English";
+				student_medium_label = 'English';
 			}
 		}
 
 		if (open) {
-			console.log("-----------------------{}")
+			console.log('-----------------------{}');
 			console.log(data.is_admin);
-			if(data.is_admin){
-				is_admin_label = "True";
+			if (data.is_admin) {
+				is_admin_label = 'True';
 			} else {
-				is_admin_label = "False";
+				is_admin_label = 'False';
 			}
 		}
-	}
-
-
-
-);
-
-
+	});
 </script>
 
 <Modal
 	bind:open
-
 	title={Object.keys(data).length ? 'Edit Sponsor' : 'Add new user'}
-	
 	size="md"
 	class="m-4"
 >
@@ -116,33 +109,31 @@ afterUpdate(() => {
 			<div class="grid grid-cols-6 gap-6">
 				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>Name</span>
-					<Input bind:value={data.name} name="name" class="border outline-none" placeholder="e.g. Bonnie" required />
+					<Input
+						bind:value={data.name}
+						name="name"
+						class="border outline-none"
+						placeholder="e.g. Bonnie"
+						required
+					/>
 				</Label>
-
-
 
 				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>Email</span>
 					<Input
-					bind:value={data.email}
+						bind:value={data.email}
 						name="email"
 						type="email"
 						class="border outline-none"
 						placeholder="e.g. bonnie@flowbite.com"
 					/>
 				</Label>
-
-
-
-
-
-
 			</div>
 		</form>
 	</div>
 
 	<!-- Modal footer -->
 	<div slot="footer">
-		<Button on:click = {handleSubmit}>{Object.keys(data).length ? 'Save all' : 'Add user'}</Button>
+		<Button on:click={handleSubmit}>{Object.keys(data).length ? 'Save all' : 'Add user'}</Button>
 	</div>
 </Modal>

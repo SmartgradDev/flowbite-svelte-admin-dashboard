@@ -20,7 +20,7 @@
 	import Users from '../../routes/data/users.json';
 	import { imagesPath } from '$lib/variables';
 
-	import User from "../../routes/(sidebar)/crud/users/User.svelte";
+	import User from '../../routes/(sidebar)/crud/users/User.svelte';
 	import Delete from '../../routes/(sidebar)/crud/users/Delete.svelte';
 	import MetaTag from '../../routes/utils/MetaTag.svelte';
 
@@ -29,9 +29,9 @@
 
 	let current_user: any = {};
 	const path: string = '/crud/users';
-  const description: string = 'CRUD users examaple - Octobrain Admin Dashboard';
-  const title: string = 'Octobrain Admin Dashboard - CRUD Users';
-  const subtitle: string = 'CRUD Users';
+	const description: string = 'CRUD users examaple - Octobrain Admin Dashboard';
+	const title: string = 'Octobrain Admin Dashboard - CRUD Users';
+	const subtitle: string = 'CRUD Users';
 </script>
 
 <MetaTag {path} {description} {title} {subtitle} />

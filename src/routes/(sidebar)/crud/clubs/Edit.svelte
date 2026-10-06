@@ -1,5 +1,14 @@
 <script lang="ts">
-	import { Button, Input, Label, Modal, Textarea, Dropdown, DropdownItem, Checkbox } from 'flowbite-svelte';
+	import {
+		Button,
+		Input,
+		Label,
+		Modal,
+		Textarea,
+		Dropdown,
+		DropdownItem,
+		Checkbox
+	} from 'flowbite-svelte';
 	import { ChevronDownOutline } from 'flowbite-svelte-icons';
 	import axios from 'axios';
 	import { onMount, afterUpdate } from 'svelte';
@@ -11,49 +20,48 @@
 	let sponsorData: any = [];
 	let tagData: any = [];
 	let tag_label = 'Select Tags';
-	let club_access_label = "Select Access"
+	let club_access_label = 'Select Access';
 
-	let user_label = "Select School";
-	let club_type_label = "Club Type";
-	let is_admin_label = "Is Admin";
+	let user_label = 'Select School';
+	let club_type_label = 'Club Type';
+	let is_admin_label = 'Is Admin';
 	const handleSchoolSelect = (id, name) => {
 		user_label = name;
 		data.schoolId = id;
-	}
-	const handleCreatorSelect = (id,name) => {
-
-	data.creatorId=id
-	data.club_creator.name = name
-}
+	};
+	const handleCreatorSelect = (id, name) => {
+		data.creatorId = id;
+		data.club_creator.name = name;
+	};
 
 	function handleAccessChange(event) {
-	// console.log(event)
-    data.access = event;
+		// console.log(event)
+		data.access = event;
 		// console.log(data)
-		if(event=== true){
-			club_access_label="True";
-		}else{
-			club_access_label="False";
+		if (event === true) {
+			club_access_label = 'True';
+		} else {
+			club_access_label = 'False';
 		}
-  }
+	}
 	const apiUrl = process.env.VITE_API_URL;
 	console.log('API URL:', apiUrl);
-	let teacher_label = "Select Teacher";
-	let sponsor_label = "Select Sponsor";
+	let teacher_label = 'Select Teacher';
+	let sponsor_label = 'Select Sponsor';
 
 	const handleTeacherSelect = (id: any, name: any) => {
 		teacher_label = name;
 		data.teacherId = id;
 		data.teacherName = name;
-	}
+	};
 
 	const handleSponsorSelect = (id: any, name: any) => {
 		sponsor_label = name;
 		data.sponsorId = id;
-	}
+	};
 
 	function isTagSelected(tagId: string) {
-		return data.tags && data.tags.some(tag => tag.tag.id === tagId);
+		return data.tags && data.tags.some((tag) => tag.tag.id === tagId);
 	}
 
 	const handleTagSelect = (id: string, name: string) => {
@@ -61,11 +69,11 @@
 			data.tags = [];
 		}
 
-		const index = data.tags.findIndex(tag => tag.tag.id === id);
+		const index = data.tags.findIndex((tag) => tag.tag.id === id);
 
 		if (index !== -1) {
 			// Tag is already selected, remove it
-			data.tags = data.tags.filter(tag => tag.tag.id !== id);
+			data.tags = data.tags.filter((tag) => tag.tag.id !== id);
 		} else {
 			// Tag is not selected, add it
 			data.tags = [...data.tags, { tag: { id, name } }];
@@ -73,7 +81,7 @@
 
 		// Update the tag label
 		updateTagLabel();
-	}
+	};
 
 	const updateTagLabel = () => {
 		if (!data.tags || data.tags.length === 0) {
@@ -83,7 +91,7 @@
 		} else {
 			tag_label = `${data.tags.length} tags selected`;
 		}
-	}
+	};
 
 	let inputValue;
 	let token: any;
@@ -100,32 +108,36 @@
 
 	function handleClubTypeChange(event) {
 		data.club_type = event;
-		if (event === "school") {
-			club_type_label = "School";
+		if (event === 'school') {
+			club_type_label = 'School';
 		} else {
-			club_type_label = "Sponsor";
+			club_type_label = 'Sponsor';
 		}
 	}
 
 	function handleIsAdminChange(event) {
 		data.is_admin = event;
-		if (event === "true") {
-			is_admin_label = "True";
+		if (event === 'true') {
+			is_admin_label = 'True';
 		} else {
-			is_admin_label = "False";
+			is_admin_label = 'False';
 		}
 	}
 
 	async function handleSubmit() {
-		data.user_type = "teacher";
+		data.user_type = 'teacher';
 		let clubUpdate_api = apiUrl + '/admin/clubUpdate/';
-		const tagsToSend = data.tags ? data.tags.map(tag => ({ tagId: tag.tag.id })) : [];
+		const tagsToSend = data.tags ? data.tags.map((tag) => ({ tagId: tag.tag.id })) : [];
 		try {
-			const response = await axios.patch(clubUpdate_api, { ...data, tags: tagsToSend }, {
-				headers: {
-					Authorization: `Bearer ${token}`
+			const response = await axios.patch(
+				clubUpdate_api,
+				{ ...data, tags: tagsToSend },
+				{
+					headers: {
+						Authorization: `Bearer ${token}`
+					}
 				}
-			});
+			);
 			open = false;
 			window.location.reload();
 			console.log(response.data); // Handle response data as needed
@@ -145,7 +157,7 @@
 
 	onMount(async () => {
 		token = getCookie('token');
-		console.log("token", token);
+		console.log('token', token);
 		let allschool_api = apiUrl + '/admin/allschoolData/';
 		let allteacher_api = apiUrl + '/admin/allteacherData/';
 		let allsponsor_api = apiUrl + '/admin/allsponsorData/';
@@ -165,7 +177,7 @@
 			}
 		});
 		tagData = responsetags.data.result;
-		console.log("This is tag data", tagData);
+		console.log('This is tag data', tagData);
 
 		const responsesponsor = await axios.get(allsponsor_api, {
 			headers: {
@@ -189,37 +201,64 @@
 	afterUpdate(() => {
 		if (open) {
 			if (data.is_admin) {
-				is_admin_label = "True";
+				is_admin_label = 'True';
 			} else {
-				is_admin_label = "False";
+				is_admin_label = 'False';
 			}
 		}
 	});
 </script>
 
-<Modal bind:open title={Object.keys(data).length ? 'Edit Club' : 'Add new user'} size="md" class="m-4">
+<Modal
+	bind:open
+	title={Object.keys(data).length ? 'Edit Club' : 'Add new user'}
+	size="md"
+	class="m-4"
+>
 	<!-- Modal body -->
 	<div class="space-y-6 p-0">
 		<form on:submit={handleSubmit} use:init>
 			<div class="grid grid-cols-6 gap-6">
 				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>Name</span>
-					<Input bind:value={data.club_name} name="name" class="border outline-none" placeholder="e.g. Bonnie" required />
+					<Input
+						bind:value={data.club_name}
+						name="name"
+						class="border outline-none"
+						placeholder="e.g. Bonnie"
+						required
+					/>
 				</Label>
 
 				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>Motto</span>
-					<Input bind:value={data.motto} name="email" type="email" class="border outline-none" placeholder="e.g. bonnie@flowbite.com" />
+					<Input
+						bind:value={data.motto}
+						name="email"
+						type="email"
+						class="border outline-none"
+						placeholder="e.g. bonnie@flowbite.com"
+					/>
 				</Label>
 				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>Description</span>
-					<Input bind:value={data.description} name="student id" type="text" class="border outline-none" placeholder="e.g. bonnie@flowbite.com" />
+					<Input
+						bind:value={data.description}
+						name="student id"
+						type="text"
+						class="border outline-none"
+						placeholder="e.g. bonnie@flowbite.com"
+					/>
 				</Label>
 
 				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>Club Type</span>
 					<div class="pt-5">
-						<Button>{data.club_type}<ChevronDownOutline class="w-6 h-6 ms-2 text-white dark:text-white" /></Button>
+						<Button
+							>{data.club_type}<ChevronDownOutline
+								class="ms-2 h-6 w-6 text-white dark:text-white"
+							/></Button
+						>
 						<Dropdown>
 							<DropdownItem on:click={() => handleClubTypeChange('school')}>School</DropdownItem>
 							<DropdownItem on:click={() => handleClubTypeChange('sponsor')}>Sponsor</DropdownItem>
@@ -236,10 +275,16 @@
 					<Label class="col-span-6 space-y-2 sm:col-span-3">
 						<span>Teacher</span>
 						<div class="pt-5">
-							<Button>{teacher_label}<ChevronDownOutline class="w-6 h-6 ms-2 text-white dark:text-white" /></Button>
+							<Button
+								>{teacher_label}<ChevronDownOutline
+									class="ms-2 h-6 w-6 text-white dark:text-white"
+								/></Button
+							>
 							<Dropdown>
 								{#each teacherData as teacher}
-									<DropdownItem on:click={() => handleTeacherSelect(teacher.id, teacher.name)}>{teacher.name}, {teacher.teacher_designation}</DropdownItem>
+									<DropdownItem on:click={() => handleTeacherSelect(teacher.id, teacher.name)}
+										>{teacher.name}, {teacher.teacher_designation}</DropdownItem
+									>
 								{/each}
 							</Dropdown>
 						</div>
@@ -250,10 +295,16 @@
 					<Label class="col-span-6 space-y-2 sm:col-span-3">
 						<span>Sponsor</span>
 						<div class="pt-5">
-							<Button>{sponsor_label}<ChevronDownOutline class="w-6 h-6 ms-2 text-white dark:text-white" /></Button>
+							<Button
+								>{sponsor_label}<ChevronDownOutline
+									class="ms-2 h-6 w-6 text-white dark:text-white"
+								/></Button
+							>
 							<Dropdown>
 								{#each sponsorData as sponsor}
-									<DropdownItem on:click={() => handleSponsorSelect(sponsor.id, sponsor.name)}>{sponsor.name}, {sponsor.email}</DropdownItem>
+									<DropdownItem on:click={() => handleSponsorSelect(sponsor.id, sponsor.name)}
+										>{sponsor.name}, {sponsor.email}</DropdownItem
+									>
 								{/each}
 							</Dropdown>
 						</div>
@@ -263,11 +314,18 @@
 				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>Tags</span>
 					<div class="pt-5">
-						<Button>{tag_label}<ChevronDownOutline class="w-6 h-6 ms-2 text-white dark:text-white" /></Button>
-						<Dropdown class="w-44 p-3 space-y-3 text-sm">
+						<Button
+							>{tag_label}<ChevronDownOutline
+								class="ms-2 h-6 w-6 text-white dark:text-white"
+							/></Button
+						>
+						<Dropdown class="w-44 space-y-3 p-3 text-sm">
 							{#each tagData as tag}
 								<li>
-									<Checkbox checked={isTagSelected(tag.id)} on:change={() => handleTagSelect(tag.id, tag.name)}>
+									<Checkbox
+										checked={isTagSelected(tag.id)}
+										on:change={() => handleTagSelect(tag.id, tag.name)}
+									>
 										{tag.name}
 									</Checkbox>
 								</li>
@@ -282,11 +340,17 @@
 					<span></span>
 
 					<div class="pt-5">
-						<Button >{data.club_creator.name}<ChevronDownOutline class="w-6 h-6 ms-2 text-white dark:text-white" /></Button>
+						<Button
+							>{data.club_creator.name}<ChevronDownOutline
+								class="ms-2 h-6 w-6 text-white dark:text-white"
+							/></Button
+						>
 						<Dropdown>
 							{#each teacherData as teacher}
-							<DropdownItem on:click={() => handleCreatorSelect(teacher.id, teacher.name)}>{teacher.name}, {teacher.teacher_designation}</DropdownItem>
-						{/each}
+								<DropdownItem on:click={() => handleCreatorSelect(teacher.id, teacher.name)}
+									>{teacher.name}, {teacher.teacher_designation}</DropdownItem
+								>
+							{/each}
 						</Dropdown>
 					</div>
 				</Label>
@@ -294,7 +358,7 @@
 				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>Visibility</span>
 					<Input
-					bind:value={data.visibility}
+						bind:value={data.visibility}
 						name="student_id"
 						type="text"
 						class="border outline-none"
@@ -302,21 +366,21 @@
 					/>
 				</Label>
 
-
 				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span></span>
 					<!-- <Input bind:value={data.account_type} name="account_type" class="border outline-none" placeholder="e.g. Green" required /> -->
 					<div class="pt-5">
-						<Button >{data.access}<ChevronDownOutline class="w-6 h-6 ms-2 text-white dark:text-white" /></Button>
+						<Button
+							>{data.access}<ChevronDownOutline
+								class="ms-2 h-6 w-6 text-white dark:text-white"
+							/></Button
+						>
 						<Dropdown>
-							<DropdownItem  on:click={() => handleAccessChange(true)}>True</DropdownItem>
-							<DropdownItem  on:click={() => handleAccessChange(false)}>False</DropdownItem>
+							<DropdownItem on:click={() => handleAccessChange(true)}>True</DropdownItem>
+							<DropdownItem on:click={() => handleAccessChange(false)}>False</DropdownItem>
 						</Dropdown>
 					</div>
 				</Label>
-
-
-
 			</div>
 		</form>
 	</div>

@@ -1,5 +1,4 @@
 <script lang="ts">
-
 	import {
 		Avatar,
 		Breadcrumb,
@@ -28,142 +27,137 @@
 	import { onMount } from 'svelte';
 	import axios from 'axios';
 
-
 	function setCookie(name, value, days) {
-    let expires = "";
-    if (days) {
-      let date = new Date();
-      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-      expires = "; expires=" + date.toUTCString();
-    }
-    document.cookie = name + "=" + (value || "") + expires + "; path=/";
-  }
+		let expires = '';
+		if (days) {
+			let date = new Date();
+			date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+			expires = '; expires=' + date.toUTCString();
+		}
+		document.cookie = name + '=' + (value || '') + expires + '; path=/';
+	}
 
-  function getCookie(name) {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.startsWith(name + '=')) {
-        return cookie.substring(name.length + 1);
-      }
-    }
-    return null;
-  }
+	function getCookie(name) {
+		const cookies = document.cookie.split(';');
+		for (let i = 0; i < cookies.length; i++) {
+			const cookie = cookies[i].trim();
+			if (cookie.startsWith(name + '=')) {
+				return cookie.substring(name.length + 1);
+			}
+		}
+		return null;
+	}
 
-  const apiUrl = process.env.VITE_API_URL;
-  console.log('API URL:', apiUrl);
+	const apiUrl = process.env.VITE_API_URL;
+	console.log('API URL:', apiUrl);
 
- // Define the base URL for the API
- const BASE_URL = apiUrl;
+	// Define the base URL for the API
+	const BASE_URL = apiUrl;
 
-// Define userData variable
-let userData = [];
+	// Define userData variable
+	let userData = [];
 
-// Function to fetch all user data
-const fetchAllUserData = async (token) => {
-  try {
-	// Make a GET request to the endpoint with the Authorization header
-	const response = await axios.get(`${BASE_URL}/admin/allfeaturedAnnouncedPosts`, {
-	  headers: {
-		Authorization: `Bearer ${token}`
-	  }
+	// Function to fetch all user data
+	const fetchAllUserData = async (token) => {
+		try {
+			// Make a GET request to the endpoint with the Authorization header
+			const response = await axios.get(`${BASE_URL}/admin/allfeaturedAnnouncedPosts`, {
+				headers: {
+					Authorization: `Bearer ${token}`
+				}
+			});
+
+			// Update userData with response data
+			userData = response.data.result;
+		} catch (error) {
+			// Log and handle errors
+			console.error('Error fetching user data:');
+		}
+	};
+
+	const BASE_URL_refreshtoken = apiUrl;
+
+	// Function to get refresh token
+	const getRefreshToken = async () => {
+		try {
+			// Retrieve token and refresh token from session storage
+			const token = sessionStorage.getItem('token');
+			const refreshToken = sessionStorage.getItem('refreshToken');
+
+			// Check if both token and refresh token exist
+			if (!token || !refreshToken) {
+				throw new Error('Token or refresh token not found in session storage.');
+			}
+
+			// Make a POST request to the refreshToken endpoint with the token and refresh token
+			console.log(token);
+			console.log(refreshToken);
+			const response = await axios.post(
+				`${BASE_URL_refreshtoken}/admin/refreshToken/`,
+				{
+					token,
+					refreshToken
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${token}`
+					}
+				}
+			);
+			const { token: newToken, refreshToken: newRefreshToken } = response.data.result;
+			// Return the response data
+			console.log(response.data);
+			return { newToken, newRefreshToken };
+		} catch (error) {
+			// Log and handle errors
+			console.error('Error refreshing token:');
+			throw error;
+		}
+	};
+
+	const updateTokens = async () => {
+		try {
+			const { newToken, newRefreshToken } = await getRefreshToken();
+			console.log('New token:', newToken);
+			console.log('New refresh token:', newRefreshToken);
+
+			// Set the new token and refresh token to session storage
+			//sessionStorage.setItem('token', newToken);
+			//sessionStorage.setItem('refreshToken', newRefreshToken);
+			setCookie('token', newToken, 7);
+			setCookie('refreshToken', newRefreshToken, 7);
+		} catch (error) {
+			// Handle errors
+			console.error('Error:');
+		}
+	};
+
+	const startPolling = () => {
+		//updateTokens(); // Initial call
+		setInterval(updateTokens, 10000); // Poll every 5 seconds
+	};
+
+	// Call fetchAllUserData on component mount
+	onMount(async () => {
+		// Retrieve the token from session storage
+		//const token = sessionStorage.getItem('token');
+
+		const token = getCookie('token');
+		console.log('token', token);
+
+		//const sessionData = sessionStorage.getItem('key');
+		// console.log(sessionData);
+
+		// If token exists, call fetchAllUserData
+		if (token) {
+			await fetchAllUserData(token);
+		} else {
+			console.error('Token not found in session storage.');
+		}
+
+		console.log('GG');
+		startPolling();
 	});
-
-	// Update userData with response data
-	userData = response.data.result;
-  } catch (error) {
-	// Log and handle errors
-	console.error('Error fetching user data:');
-  }
-};
-
-
-const BASE_URL_refreshtoken = apiUrl ;
-
-// Function to get refresh token
-const getRefreshToken = async () => {
-    try {
-        // Retrieve token and refresh token from session storage
-        const token = sessionStorage.getItem('token');
-        const refreshToken = sessionStorage.getItem('refreshToken');
-
-        // Check if both token and refresh token exist
-        if (!token || !refreshToken) {
-            throw new Error('Token or refresh token not found in session storage.');
-        }
-
-        // Make a POST request to the refreshToken endpoint with the token and refresh token
-		console.log(token);
-		console.log(refreshToken);
-        const response = await axios.post(`${BASE_URL_refreshtoken}/admin/refreshToken/`, {
-            token,
-            refreshToken
-        }, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-		const { token: newToken, refreshToken: newRefreshToken } = response.data.result;
-        // Return the response data
-		console.log(response.data);
-        return { newToken, newRefreshToken };
-    } catch (error) {
-        // Log and handle errors
-        console.error('Error refreshing token:');
-        throw error;
-    }
-};
-
-const updateTokens = async () => {
-    try {
-        const { newToken, newRefreshToken } = await getRefreshToken();
-        console.log('New token:', newToken);
-        console.log('New refresh token:', newRefreshToken);
-
-        // Set the new token and refresh token to session storage
-        //sessionStorage.setItem('token', newToken);
-        //sessionStorage.setItem('refreshToken', newRefreshToken);
-		setCookie('token', newToken, 7);
-		setCookie('refreshToken', newRefreshToken, 7);
-
-
-
-
-    } catch (error) {
-        // Handle errors
-        console.error('Error:');
-    }
-};
-
-const startPolling = () => {
-
-//updateTokens(); // Initial call
-setInterval(updateTokens, 10000); // Poll every 5 seconds
-};
-
-
-
-// Call fetchAllUserData on component mount
-onMount(async () => {
-  // Retrieve the token from session storage
-  //const token = sessionStorage.getItem('token');
-
-  const token = getCookie('token');
-  console.log("token",token);
-
-  //const sessionData = sessionStorage.getItem('key');
- // console.log(sessionData);
-
-  // If token exists, call fetchAllUserData
-  if (token) {
-	await fetchAllUserData(token);
-  } else {
-	console.error('Token not found in session storage.');
-  }
-
-  console.log("GG");
-  startPolling();
-});
 
 	let openUser: boolean = false; // modal control
 	let addUser: boolean = false; // modal control
@@ -171,9 +165,9 @@ onMount(async () => {
 
 	let current_user: any = {};
 	const path: string = '/crud/users';
-  const description: string = 'CRUD users examaple - Octobrain Admin Dashboard';
-  const title: string = 'Octobrain Admin Dashboard - CRUD Users';
-  const subtitle: string = 'CRUD Users';
+	const description: string = 'CRUD users examaple - Octobrain Admin Dashboard';
+	const title: string = 'Octobrain Admin Dashboard - CRUD Users';
+	const subtitle: string = 'CRUD Users';
 </script>
 
 <MetaTag {path} {description} {title} {subtitle} />
@@ -235,7 +229,7 @@ onMount(async () => {
 	<Table>
 		<TableHead class="border-y border-gray-200 bg-gray-100 dark:border-gray-700">
 			<!-- <TableHeadCell class="w-4 p-4"><Checkbox /></TableHeadCell> -->
-			{#each ['Title', 'Type','Link','Announcement','Button Text', 'Actions'] as title}
+			{#each ['Title', 'Type', 'Link', 'Announcement', 'Button Text', 'Actions'] as title}
 				<TableHeadCell class="p-4 font-medium">{title}</TableHeadCell>
 			{/each}
 		</TableHead>
@@ -243,23 +237,19 @@ onMount(async () => {
 			{#each userData as user}
 				<TableBodyRow class="text-base">
 					<!-- <TableBodyCell class="w-4 p-4"><Checkbox /></TableBodyCell> -->
-					<TableBodyCell class="p-4">{user?.title||"N/A"}</TableBodyCell>
+					<TableBodyCell class="p-4">{user?.title || 'N/A'}</TableBodyCell>
 
-					<TableBodyCell class="p-4">{user?.type||"N/A"}</TableBodyCell>
+					<TableBodyCell class="p-4">{user?.type || 'N/A'}</TableBodyCell>
 					<!-- <TableBodyCell class="p-4">{user.colorcode||"N/A"}</TableBodyCell> -->
-
 
 					<!-- <TableBodyCell
 					class="max-w-sm overflow-hidden truncate p-4 text-base font-normal text-gray-500 dark:text-gray-400 xl:max-w-xs"
 				>
 				{user.data ? JSON.stringify(user.data, null, 2) : "N/A"}
 				</TableBodyCell> -->
-				<TableBodyCell class="p-4">{user?.data?.link||"N/A"}</TableBodyCell>
-				<TableBodyCell class="p-4">{user?.data?.announcement||"N/A"}</TableBodyCell>
-				<TableBodyCell class="p-4">{user?.data?.buttonText||"N/A"}</TableBodyCell>
-
-
-
+					<TableBodyCell class="p-4">{user?.data?.link || 'N/A'}</TableBodyCell>
+					<TableBodyCell class="p-4">{user?.data?.announcement || 'N/A'}</TableBodyCell>
+					<TableBodyCell class="p-4">{user?.data?.buttonText || 'N/A'}</TableBodyCell>
 
 					<TableBodyCell class="space-x-2 p-4">
 						<Button
@@ -287,5 +277,5 @@ onMount(async () => {
 <!-- Modals -->
 
 <User bind:open={openUser} data={current_user} />
-<Adduser bind:open={addUser} data={current_user}/>
-<Delete bind:open={openDelete}  data={current_user} />
+<Adduser bind:open={addUser} data={current_user} />
+<Delete bind:open={openDelete} data={current_user} />

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Label, Input } from 'flowbite-svelte';
 	import { SignUp } from '$lib';
-  import MetaTag from '../utils/MetaTag.svelte';
+	import MetaTag from '../utils/MetaTag.svelte';
 
 	const title = 'Create a Free Account';
 	const site = {
@@ -28,13 +28,12 @@
 	};
 
 	const path: string = '/authentication/sign-up';
-  const description: string = 'Sign up example - Octobrain Admin Dashboard';
+	const description: string = 'Sign up example - Octobrain Admin Dashboard';
 	const metaTitle: string = 'Octobrain Admin Dashboard - Sign up';
-  const subtitle: string = 'Sign up';
+	const subtitle: string = 'Sign up';
 </script>
 
 <MetaTag {path} {description} title={metaTitle} {subtitle} />
-
 
 <SignUp
 	{title}

@@ -116,7 +116,7 @@
 	</div>
 	<Table>
 		<TableHead class="border-y border-gray-200 bg-gray-100 dark:border-gray-700">
-			{#each ['Name', 'School', 'Designation', 'Phone Number',  'Actions'] as title}
+			{#each ['Name', 'School', 'Designation', 'Phone Number', 'Actions'] as title}
 				<TableHeadCell class="p-4 font-medium">{title}</TableHeadCell>
 			{/each}
 		</TableHead>
@@ -135,7 +135,9 @@
 					</TableBodyCell>
 
 					<TableBodyCell class="p-4">{instructor.teacher.school?.name || 'N/A'}</TableBodyCell>
-					<TableBodyCell class="p-4">{instructor.teacher.teacher_designation || 'N/A'}</TableBodyCell>
+					<TableBodyCell class="p-4"
+						>{instructor.teacher.teacher_designation || 'N/A'}</TableBodyCell
+					>
 					<TableBodyCell class="p-4">{instructor.teacher.phone_number || 'N/A'}</TableBodyCell>
 					<!-- <TableBodyCell class="space-x-2 p-4">
 						<Button

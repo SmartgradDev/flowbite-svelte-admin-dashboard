@@ -23,7 +23,7 @@
 	import User from './Edit.svelte';
 	import Adduser from './Add.svelte';
 	import Delete from './Delete.svelte';
-	import Verification from './verification.svelte'
+	import Verification from './verification.svelte';
 	import MetaTag from '../../../utils/MetaTag.svelte';
 	import { onMount } from 'svelte';
 	import axios from 'axios';
@@ -31,13 +31,12 @@
 	let currentPage = 1; // Start from page 1
 	let totalPages = 1; // Initialize with 1, will be updated dynamically
 	const itemsPerPage = 10; // Number of items per page
-	let searchQuery = ""; // For storing the search query (city)
-	let isVerifiedFilter = "all"; // For storing the filter value (isVerified)
-	let cityFilter = "all";
+	let searchQuery = ''; // For storing the search query (city)
+	let isVerifiedFilter = 'all'; // For storing the filter value (isVerified)
+	let cityFilter = 'all';
 
-
-		// Function to handle search and filter
-		const applyFilters = async () => {
+	// Function to handle search and filter
+	const applyFilters = async () => {
 		const token = getCookie('token');
 		if (token) {
 			await fetchAllUserData(token);
@@ -47,13 +46,13 @@
 	};
 
 	function setCookie(name, value, days) {
-		let expires = "";
+		let expires = '';
 		if (days) {
 			let date = new Date();
-			date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-			expires = "; expires=" + date.toUTCString();
+			date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+			expires = '; expires=' + date.toUTCString();
 		}
-		document.cookie = name + "=" + (value || "") + expires + "; path=/";
+		document.cookie = name + '=' + (value || '') + expires + '; path=/';
 	}
 
 	function getCookie(name) {
@@ -80,15 +79,15 @@
 			// Build the query parameters based on the search and filter values
 			const params: Record<string, any> = {
 				page: currentPage,
-				limit: itemsPerPage,
+				limit: itemsPerPage
 			};
 			if (searchQuery) {
 				params.search = searchQuery;
 			}
-			if (isVerifiedFilter !== "all") {
+			if (isVerifiedFilter !== 'all') {
 				params.isVerified = isVerifiedFilter;
 			}
-			if (cityFilter !== "all") {
+			if (cityFilter !== 'all') {
 				params.city = cityFilter;
 			}
 
@@ -125,14 +124,18 @@
 			}
 
 			// Make a POST request to the refreshToken endpoint with the token and refresh token
-			const response = await axios.post(`${BASE_URL}/admin/refreshToken/`, {
-				token,
-				refreshToken
-			}, {
-				headers: {
-					Authorization: `Bearer ${token}`
+			const response = await axios.post(
+				`${BASE_URL}/admin/refreshToken/`,
+				{
+					token,
+					refreshToken
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${token}`
+					}
 				}
-			});
+			);
 
 			const { token: newToken, refreshToken: newRefreshToken } = response.data.result;
 			return { newToken, newRefreshToken };
@@ -224,43 +227,42 @@
 				</ToolbarButton>
 			</div> -->
 
-
-
 			<Input
-			placeholder="Search by Name"
-			bind:value={searchQuery}
-			class="me-4 w-80 border xl:w-96"
-		/>
+				placeholder="Search by Name"
+				bind:value={searchQuery}
+				class="me-4 w-80 border xl:w-96"
+			/>
 
-		<select bind:value={isVerifiedFilter} class="me-4 w-40 border xl:w-52 rounded-md bg-gray-800 text-gray-300 placeholder-gray-400 p-2">
-			<option value="all">All Verification</option>
-			<option value="true">Verified</option>
-			<option value="false">Not Verified</option>
-		</select>
+			<select
+				bind:value={isVerifiedFilter}
+				class="me-4 w-40 rounded-md border bg-gray-800 p-2 text-gray-300 placeholder-gray-400 xl:w-52"
+			>
+				<option value="all">All Verification</option>
+				<option value="true">Verified</option>
+				<option value="false">Not Verified</option>
+			</select>
 
+			<select
+				bind:value={cityFilter}
+				class="me-4 w-40 rounded-md border bg-gray-800 p-2 text-gray-300 placeholder-gray-400 xl:w-52"
+			>
+				<option value="all">All Cities</option>
+				<option value="Dhaka">Dhaka</option>
+				<option value="Chattogram">Chattogram</option>
+				<option value="Khulna">Khulna</option>
+				<option value="Sylhet">Sylhet</option>
+				<option value="Rajshahi">Rajshahi</option>
+				<option value="Mymensingh">Mymensingh</option>
+				<option value="Rangpur">Rangpur</option>
+				<option value="Barisal">Barisal</option>
+				<option value="Cumilla">Cumilla</option>
+				<option value="Gazipur">Gazipur</option>
+				<option value="Narayanganj">Narayanganj</option>
+			</select>
 
-		<select bind:value={cityFilter} class="me-4 w-40 border xl:w-52 rounded-md bg-gray-800 text-gray-300 placeholder-gray-400 p-2">
-			<option value="all">All Cities</option>
-			<option value="Dhaka">Dhaka</option>
-			<option value="Chattogram">Chattogram</option>
-			<option value="Khulna">Khulna</option>
-			<option value="Sylhet">Sylhet</option>
-			<option value="Rajshahi">Rajshahi</option>
-			<option value="Mymensingh">Mymensingh</option>
-			<option value="Rangpur">Rangpur</option>
-			<option value="Barisal">Barisal</option>
-			<option value="Cumilla">Cumilla</option>
-			<option value="Gazipur">Gazipur</option>
-			<option value="Narayanganj">Narayanganj</option>
-		  </select>
-		  
-		  
-
-		<Button size="sm" on:click={applyFilters} class="gap-2 whitespace-nowrap px-3">
-			Apply Filters
-		</Button>
-
-
+			<Button size="sm" on:click={applyFilters} class="gap-2 whitespace-nowrap px-3">
+				Apply Filters
+			</Button>
 
 			<div slot="end" class="flex items-center space-x-2">
 				<Button
@@ -279,7 +281,7 @@
 	<Table>
 		<TableHead class="border-y border-gray-200 bg-gray-100 dark:border-gray-700">
 			<!-- <TableHeadCell class="w-4 p-4"><Checkbox /></TableHeadCell> -->
-			{#each ['Name', 'Location','Email','Phone Number','Is Verified','Actions'] as title}
+			{#each ['Name', 'Location', 'Email', 'Phone Number', 'Is Verified', 'Actions'] as title}
 				<TableHeadCell class="p-4 font-medium">{title}</TableHeadCell>
 			{/each}
 		</TableHead>
@@ -287,27 +289,27 @@
 			{#each userData as user}
 				<TableBodyRow class="text-base">
 					<!-- <TableBodyCell class="w-4 p-4"><Checkbox /></TableBodyCell> -->
-					<TableBodyCell class="p-4">{user.name||"N/A"}</TableBodyCell>
+					<TableBodyCell class="p-4">{user.name || 'N/A'}</TableBodyCell>
 
 					<TableBodyCell class="mr-12 flex items-center space-x-6 whitespace-nowrap p-4">
-
 						<div class="text-sm font-normal text-gray-500 dark:text-gray-400">
 							<div class="text-base font-semibold text-gray-900 dark:text-white">{user?.city}</div>
-							<div class="text-sm font-normal text-gray-500 dark:text-gray-400">{user?.country}</div>
+							<div class="text-sm font-normal text-gray-500 dark:text-gray-400">
+								{user?.country}
+							</div>
 						</div>
 					</TableBodyCell>
-					<TableBodyCell class="p-4">{user.email||"N/A"}</TableBodyCell>
-					<TableBodyCell class="p-4">{user.contact_number||"N/A"}</TableBodyCell>
+					<TableBodyCell class="p-4">{user.email || 'N/A'}</TableBodyCell>
+					<TableBodyCell class="p-4">{user.contact_number || 'N/A'}</TableBodyCell>
 					<!-- <TableBodyCell class="p-4">{user.created_by_account_type||"N/A"}</TableBodyCell> -->
-
-
 
 					<TableBodyCell class="space-x-2 p-4">
 						<Button
 							size="sm"
 							class="gap-2 px-3"
 							on:click={() => {
-								if (!user.isVerified) { // Check if isVerified is false
+								if (!user.isVerified) {
+									// Check if isVerified is false
 									current_user = user;
 									openVerification = true;
 								}
@@ -316,7 +318,7 @@
 							<EditOutline size="sm" />{user.isVerified}
 						</Button>
 					</TableBodyCell>
-					
+
 					<TableBodyCell class="space-x-2 p-4">
 						<Button
 							size="sm"
@@ -346,10 +348,10 @@
 		Showing <span class="font-semibold text-gray-900 dark:text-white">{currentPage}</span> of{' '}
 		<span class="font-semibold text-gray-900 dark:text-white">{totalPages}</span> Entries
 	</span>
-	<div class="inline-flex mt-2 xs:mt-0">
+	<div class="xs:mt-0 mt-2 inline-flex">
 		<!-- Previous Page -->
 		<button
-			class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gray-800 border-0 border-l border-gray-700 rounded-l hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+			class="inline-flex items-center rounded-l border-0 border-l border-gray-700 bg-gray-800 px-4 py-2 text-sm font-medium text-white hover:bg-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
 			on:click={() => {
 				if (currentPage > 1) {
 					currentPage--;
@@ -362,7 +364,7 @@
 		</button>
 		<!-- Next Page -->
 		<button
-			class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gray-800 border-0 border-l border-gray-700 rounded-r hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+			class="inline-flex items-center rounded-r border-0 border-l border-gray-700 bg-gray-800 px-4 py-2 text-sm font-medium text-white hover:bg-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
 			on:click={() => {
 				if (currentPage < totalPages) {
 					currentPage++;
@@ -378,5 +380,5 @@
 
 <Verification bind:open={openVerification} data={current_user} />
 <User bind:open={openUser} data={current_user} />
-<Adduser bind:open={addUser} data={current_user}/>
-<Delete bind:open={openDelete}  data={current_user} />
+<Adduser bind:open={addUser} data={current_user} />
+<Delete bind:open={openDelete} data={current_user} />

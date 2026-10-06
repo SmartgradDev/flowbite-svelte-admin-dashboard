@@ -16,9 +16,9 @@
 	import MetaTag from '../../../utils/MetaTag.svelte';
 
 	const path: string = '/pages/pricing';
-  const description: string = 'Pricing examaple - Octobrain Admin Dashboard';
-  const title: string = 'Octobrain Admin Dashboard - Pricing';
-  const subtitle: string = 'Pricing';
+	const description: string = 'Pricing examaple - Octobrain Admin Dashboard';
+	const title: string = 'Octobrain Admin Dashboard - Pricing';
+	const subtitle: string = 'Pricing';
 </script>
 
 <MetaTag {path} {description} {title} {subtitle} />

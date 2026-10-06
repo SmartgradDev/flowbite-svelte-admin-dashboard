@@ -3,53 +3,49 @@
 	import axios from 'axios';
 	import { onMount } from 'svelte';
 	export let open: boolean = false; // modal control
-	import { Dropdown, DropdownItem, DropdownDivider, DropdownHeader} from 'flowbite-svelte';
+	import { Dropdown, DropdownItem, DropdownDivider, DropdownHeader } from 'flowbite-svelte';
 	import { ChevronDownOutline } from 'flowbite-svelte-icons';
 	export let data: Record<string, string> = {};
 	const apiUrl = process.env.VITE_API_URL;
-let user_label="Select User";
+	let user_label = 'Select User';
 	let inputValue;
 	let token;
-	const handleUserSelect = (id,name) => {
-	user_label=name
-	data.userId=id
-}
+	const handleUserSelect = (id, name) => {
+		user_label = name;
+		data.userId = id;
+	};
 	function getCookie(name) {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.startsWith(name + '=')) {
-        return cookie.substring(name.length + 1);
-      }
-    }
-    return null;
-  }
-  async function handleSubmit() {
-    // Assuming `token` is defined somewhere accessible
+		const cookies = document.cookie.split(';');
+		for (let i = 0; i < cookies.length; i++) {
+			const cookie = cookies[i].trim();
+			if (cookie.startsWith(name + '=')) {
+				return cookie.substring(name.length + 1);
+			}
+		}
+		return null;
+	}
+	async function handleSubmit() {
+		// Assuming `token` is defined somewhere accessible
 
+		// Assuming `data` contains the payload you want to send in the request
+		console.log('Inside submit');
+		console.log(data);
+		//console.log(data.id);
+		console.log(token);
 
-    // Assuming `data` contains the payload you want to send in the request
-    console.log("Inside submit");
-    console.log(data);
-    //console.log(data.id);
-	console.log(token);
-
-
-    try {
-        const response = await axios.post(process.env.VITE_API_URL+'/admin/addPost/', data, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-				open=false
-				window.location.reload();
-        console.log(response.data); // Handle response data as needed
-    } catch (error) {
-        console.error('Error:');
-    }
-}
-
-
+		try {
+			const response = await axios.post(process.env.VITE_API_URL + '/admin/addPost/', data, {
+				headers: {
+					Authorization: `Bearer ${token}`
+				}
+			});
+			open = false;
+			window.location.reload();
+			console.log(response.data); // Handle response data as needed
+		} catch (error) {
+			console.error('Error:');
+		}
+	}
 
 	function init(form: HTMLFormElement) {
 		if (data?.name) [data.first_name, data.last_name] = data.name.split(' ');
@@ -60,23 +56,21 @@ let user_label="Select User";
 		}
 	}
 	1;
-	let  userData=[];
+	let userData = [];
 	onMount(async () => {
-  // Retrieve the token from session storage
-  // const token = sessionStorage.getItem('token');
+		// Retrieve the token from session storage
+		// const token = sessionStorage.getItem('token');
 
-  token = getCookie('token');
-	const response= await axios.get(process.env.VITE_API_URL+'/admin/alluserData/', {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-				userData=response.data
-				console.log(userData)
-  console.log("token",token);
-
-
-});
+		token = getCookie('token');
+		const response = await axios.get(process.env.VITE_API_URL + '/admin/alluserData/', {
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		});
+		userData = response.data;
+		console.log(userData);
+		console.log('token', token);
+	});
 </script>
 
 <Modal
@@ -91,7 +85,13 @@ let user_label="Select User";
 			<div class="grid grid-cols-6 gap-6">
 				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>Post Title</span>
-					<Input bind:value={data.title} name="name" class="border outline-none" placeholder="" required />
+					<Input
+						bind:value={data.title}
+						name="name"
+						class="border outline-none"
+						placeholder=""
+						required
+					/>
 				</Label>
 				<Label class="col-span-6 space-y-2 sm:col-span-3">
 					<span>UserId</span>
@@ -99,18 +99,25 @@ let user_label="Select User";
 					<span></span>
 
 					<div class="pt-5">
-						<Button >{user_label}<ChevronDownOutline class="w-6 h-6 ms-2 text-white dark:text-white" /></Button>
+						<Button
+							>{user_label}<ChevronDownOutline
+								class="ms-2 h-6 w-6 text-white dark:text-white"
+							/></Button
+						>
 						<Dropdown>
 							{#each userData as user}
-								<DropdownItem  on:click={() => handleUserSelect(user?.id,user?.name)}>{user?.name}, {user?.email}</DropdownItem>
-							<!-- <DropdownItem  on:click={() => handleIsAdminChange('false')}>False</DropdownItem> -->
+								<DropdownItem on:click={() => handleUserSelect(user?.id, user?.name)}
+									>{user?.name}, {user?.email}</DropdownItem
+								>
+								<!-- <DropdownItem  on:click={() => handleIsAdminChange('false')}>False</DropdownItem> -->
 							{/each}
 						</Dropdown>
 					</div>
 				</Label>
-                <Label class="col-span-6 space-y-2">
+				<Label class="col-span-6 space-y-2">
 					<span>Post Content</span>
-					<Textarea bind:value={data.text_content}
+					<Textarea
+						bind:value={data.text_content}
 						id="biography"
 						rows="4"
 						class="bg-gray-50 outline-none dark:bg-gray-700"
@@ -119,16 +126,12 @@ let user_label="Select User";
 						👨‍💻Full-stack web developer. Open-source contributor.
 					</Textarea>
 				</Label>
-
-
-
-
 			</div>
 		</form>
 	</div>
 
 	<!-- Modal footer -->
 	<div slot="footer">
-		<Button on:click = {handleSubmit}>{Object.keys(data).length ? 'Save all' : 'Add user'}</Button>
+		<Button on:click={handleSubmit}>{Object.keys(data).length ? 'Save all' : 'Add user'}</Button>
 	</div>
 </Modal>

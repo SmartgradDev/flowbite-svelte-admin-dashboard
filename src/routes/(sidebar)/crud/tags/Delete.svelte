@@ -5,45 +5,41 @@
 	import { onMount } from 'svelte';
 	export let open: boolean = false; // modal control
 	export let data: Record<string, string> = {};
-	let token:any;
+	let token: any;
 
-  const apiUrl = process.env.VITE_API_URL;
-  console.log('API URL:', apiUrl);
-  let tagDelete_api = apiUrl +'/admin/tag/'
+	const apiUrl = process.env.VITE_API_URL;
+	console.log('API URL:', apiUrl);
+	let tagDelete_api = apiUrl + '/admin/tag/';
 
-	function getCookie(name:any) {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.startsWith(name + '=')) {
-        return cookie.substring(name.length + 1);
-      }
-    }
-    return null;
-  }
+	function getCookie(name: any) {
+		const cookies = document.cookie.split(';');
+		for (let i = 0; i < cookies.length; i++) {
+			const cookie = cookies[i].trim();
+			if (cookie.startsWith(name + '=')) {
+				return cookie.substring(name.length + 1);
+			}
+		}
+		return null;
+	}
 
 	async function handleSubmit() {
+		try {
+			const response = await axios.delete(tagDelete_api + '?id=' + data?.id, {
+				headers: {
+					Authorization: `Bearer ${token}`
+				}
+			});
+			open = false;
+			window.location.reload();
+			console.log(response.data); // Handle response data as needed
+		} catch (error) {
+			console.error('Error:');
+		}
+	}
 
-    try {
-        const response = await axios.delete(tagDelete_api+"?id="+data?.id,  {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-        open=false
-        window.location.reload();
-        console.log(response.data); // Handle response data as needed
-    } catch (error) {
-        console.error('Error:');
-    }
-}
-
-
-onMount(async () => {
-
-  token = getCookie('token');
-
-});
+	onMount(async () => {
+		token = getCookie('token');
+	});
 </script>
 
 <Modal bind:open size="sm">
@@ -54,7 +50,7 @@ onMount(async () => {
 	</h3>
 
 	<div class="flex items-center justify-center">
-		<Button on:click = {handleSubmit}  color="red" class="mr-2">Yes, I'm sure</Button>
+		<Button on:click={handleSubmit} color="red" class="mr-2">Yes, I'm sure</Button>
 		<Button color="alternative" on:click={() => (open = false)}>No, cancel</Button>
 	</div>
 </Modal>

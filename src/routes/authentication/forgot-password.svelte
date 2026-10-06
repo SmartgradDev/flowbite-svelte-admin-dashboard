@@ -14,9 +14,9 @@
 	};
 
 	const path: string = '/authentication/forgot-password';
-  const description: string = 'Forgot password example - Octobrain Admin Dashboard';
+	const description: string = 'Forgot password example - Octobrain Admin Dashboard';
 	const title: string = 'Octobrain Admin Dashboard - Forgot password';
-  const subtitle: string = 'Forgot password';
+	const subtitle: string = 'Forgot password';
 </script>
 
 <MetaTag {path} {description} {title} {subtitle} />

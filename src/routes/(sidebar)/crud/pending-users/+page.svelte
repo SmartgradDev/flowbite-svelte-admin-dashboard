@@ -70,9 +70,10 @@
 		const status = error?.response?.status;
 		const errData = error?.response?.data;
 		if (status === 401 || status === 403) {
-			const msg = typeof errData?.error === 'object'
-				? errData?.error?.message
-				: (errData?.error || errData?.message);
+			const msg =
+				typeof errData?.error === 'object'
+					? errData?.error?.message
+					: errData?.error || errData?.message;
 			if (msg) return `Session Expired (${msg}). Please refresh or log in again.`;
 			return 'Session Expired or Unauthorized (403/401). Please log in again.';
 		}
@@ -173,11 +174,15 @@
 		const name = getUserName(user).toLowerCase();
 		const type = (user?.type || '').toLowerCase();
 		const phone = getUserPhone(user).toLowerCase();
-		return email.includes(query) || name.includes(query) || type.includes(query) || phone.includes(query);
+		return (
+			email.includes(query) || name.includes(query) || type.includes(query) || phone.includes(query)
+		);
 	});
 
 	// Selection Handlers
-	$: isAllSelected = filteredUsers.length > 0 && filteredUsers.every((u: any) => u?.id && selectedIds.includes(u.id));
+	$: isAllSelected =
+		filteredUsers.length > 0 &&
+		filteredUsers.every((u: any) => u?.id && selectedIds.includes(u.id));
 
 	function toggleSelectAll() {
 		const validFilteredIds = filteredUsers.map((u: any) => u.id).filter(Boolean);
@@ -286,7 +291,8 @@
 					}
 				}
 			);
-			successMessage = response.data?.message || `Successfully approved ${selectedIds.length} selected users`;
+			successMessage =
+				response.data?.message || `Successfully approved ${selectedIds.length} selected users`;
 			showApproveBulkModal = false;
 			selectedIds = [];
 			await fetchPendingUsers();
@@ -344,18 +350,24 @@
 
 		{#if successMessage}
 			<Alert color="green" class="mt-4" dismissible on:close={() => (successMessage = '')}>
-				<span class="font-medium">Success:</span> {successMessage}
+				<span class="font-medium">Success:</span>
+				{successMessage}
 			</Alert>
 		{/if}
 
 		{#if errorMessage}
 			<Alert color="red" class="mt-4" dismissible on:close={() => (errorMessage = '')}>
-				<span class="font-medium">Error:</span> {errorMessage}
+				<span class="font-medium">Error:</span>
+				{errorMessage}
 			</Alert>
 		{/if}
 
 		<Toolbar embedded class="w-full py-4 text-gray-500 dark:text-gray-400">
-			<Input placeholder="Search pending users" bind:value={searchFilter} class="me-4 w-72 border xl:w-80" />
+			<Input
+				placeholder="Search pending users"
+				bind:value={searchFilter}
+				class="me-4 w-72 border xl:w-80"
+			/>
 
 			<div slot="end" class="flex flex-wrap items-center gap-2">
 				<Button
@@ -378,7 +390,13 @@
 					<CheckCircleSolid size="sm" /> Approve All Pending ({pendingUsers.length})
 				</Button>
 
-				<Button size="sm" color="alternative" class="gap-1 px-3" on:click={fetchPendingUsers} disabled={loading}>
+				<Button
+					size="sm"
+					color="alternative"
+					class="gap-1 px-3"
+					on:click={fetchPendingUsers}
+					disabled={loading}
+				>
 					{#if loading}
 						<Spinner size="4" />
 					{:else}
@@ -393,7 +411,11 @@
 	<Table>
 		<TableHead class="border-y border-gray-200 bg-gray-100 dark:border-gray-700">
 			<TableHeadCell class="w-4 p-4">
-				<Checkbox checked={isAllSelected} on:change={toggleSelectAll} disabled={filteredUsers.length === 0} />
+				<Checkbox
+					checked={isAllSelected}
+					on:change={toggleSelectAll}
+					disabled={filteredUsers.length === 0}
+				/>
 			</TableHeadCell>
 			{#each ['Name', 'Email', 'Type', 'Phone', 'School ID', 'Registered Date', 'Status', 'Actions'] as title}
 				<TableHeadCell class="p-4 font-medium">{title}</TableHeadCell>
@@ -411,8 +433,12 @@
 					<TableBodyCell colspan={9} class="p-12 text-center text-gray-500 dark:text-gray-400">
 						<div class="flex flex-col items-center justify-center space-y-2">
 							<UsersGroupSolid class="h-10 w-10 text-gray-400 dark:text-gray-500" />
-							<p class="text-base font-medium text-gray-700 dark:text-gray-300">No pending registrations</p>
-							<p class="text-sm text-gray-500 dark:text-gray-400">There are currently no user accounts waiting for admin approval.</p>
+							<p class="text-base font-medium text-gray-700 dark:text-gray-300">
+								No pending registrations
+							</p>
+							<p class="text-sm text-gray-500 dark:text-gray-400">
+								There are currently no user accounts waiting for admin approval.
+							</p>
 						</div>
 					</TableBodyCell>
 				</TableBodyRow>
@@ -430,34 +456,30 @@
 						</TableBodyCell>
 						<TableBodyCell class="p-4 text-xs">{user?.email ?? 'N/A'}</TableBodyCell>
 						<TableBodyCell class="p-4">
-							<Badge color={user?.type === 'student' ? 'blue' : user?.type === 'teacher' ? 'purple' : 'indigo'}>
+							<Badge
+								color={user?.type === 'student'
+									? 'blue'
+									: user?.type === 'teacher'
+										? 'purple'
+										: 'indigo'}
+							>
 								{user?.type ? user.type.toUpperCase() : 'N/A'}
 							</Badge>
 						</TableBodyCell>
 						<TableBodyCell class="p-4 text-xs">{getUserPhone(user)}</TableBodyCell>
-						<TableBodyCell class="p-4 font-mono text-xs">{getUserSchool(user)}</TableBodyCell>
+						<TableBodyCell class="font-mono p-4 text-xs">{getUserSchool(user)}</TableBodyCell>
 						<TableBodyCell class="p-4 text-xs">{formatDate(user?.createdAt)}</TableBodyCell>
 						<TableBodyCell class="p-4">
 							<Badge color="yellow">{user?.approvalStatus ?? 'PENDING'}</Badge>
 						</TableBodyCell>
 						<TableBodyCell class="p-4">
 							<div class="flex items-center space-x-1.5">
-								<Button
-									size="xs"
-									color="green"
-									class="p-2"
-									on:click={() => openApproveModal(user)}
-								>
+								<Button size="xs" color="green" class="p-2" on:click={() => openApproveModal(user)}>
 									<CheckCircleSolid class="h-4 w-4" />
 								</Button>
 								<Tooltip>Approve User</Tooltip>
 
-								<Button
-									size="xs"
-									color="red"
-									class="p-2"
-									on:click={() => openRejectModal(user)}
-								>
+								<Button size="xs" color="red" class="p-2" on:click={() => openRejectModal(user)}>
 									<CloseCircleSolid class="h-4 w-4" />
 								</Button>
 								<Tooltip>Reject Request</Tooltip>
@@ -478,7 +500,9 @@
 			Approve User Registration?
 		</h3>
 		<p class="mb-6 text-sm text-gray-500 dark:text-gray-400">
-			User <span class="font-medium text-gray-900 dark:text-white">{getUserName(selectedUser)}</span> ({selectedUser?.email ?? 'N/A'}) will be granted platform access.
+			User <span class="font-medium text-gray-900 dark:text-white">{getUserName(selectedUser)}</span
+			>
+			({selectedUser?.email ?? 'N/A'}) will be granted platform access.
 		</p>
 		<div class="flex justify-center gap-3">
 			<Button color="green" class="px-5 py-2" on:click={handleApproveUser} disabled={actionLoading}>
@@ -488,7 +512,12 @@
 					Yes, Approve
 				{/if}
 			</Button>
-			<Button color="alternative" class="px-5 py-2" on:click={() => (showApproveModal = false)} disabled={actionLoading}>
+			<Button
+				color="alternative"
+				class="px-5 py-2"
+				on:click={() => (showApproveModal = false)}
+				disabled={actionLoading}
+			>
 				Cancel
 			</Button>
 		</div>
@@ -503,7 +532,10 @@
 			Reject Registration Request?
 		</h3>
 		<p class="mb-6 text-sm text-gray-500 dark:text-gray-400">
-			Request for <span class="font-medium text-gray-900 dark:text-white">{getUserName(selectedUser)}</span> ({selectedUser?.email ?? 'N/A'}) will be rejected.
+			Request for <span class="font-medium text-gray-900 dark:text-white"
+				>{getUserName(selectedUser)}</span
+			>
+			({selectedUser?.email ?? 'N/A'}) will be rejected.
 		</p>
 		<div class="flex justify-center gap-3">
 			<Button color="red" class="px-5 py-2" on:click={handleRejectUser} disabled={actionLoading}>
@@ -513,7 +545,12 @@
 					Yes, Reject
 				{/if}
 			</Button>
-			<Button color="alternative" class="px-5 py-2" on:click={() => (showRejectModal = false)} disabled={actionLoading}>
+			<Button
+				color="alternative"
+				class="px-5 py-2"
+				on:click={() => (showRejectModal = false)}
+				disabled={actionLoading}
+			>
 				Cancel
 			</Button>
 		</div>
@@ -528,17 +565,29 @@
 			Approve {selectedIds.length} Selected Users?
 		</h3>
 		<p class="mb-6 text-sm text-gray-500 dark:text-gray-400">
-			Are you sure you want to approve all <span class="font-medium text-gray-900 dark:text-white">{selectedIds.length}</span> checked user accounts at once?
+			Are you sure you want to approve all <span class="font-medium text-gray-900 dark:text-white"
+				>{selectedIds.length}</span
+			> checked user accounts at once?
 		</p>
 		<div class="flex justify-center gap-3">
-			<Button color="green" class="px-5 py-2" on:click={handleApproveBulkUsers} disabled={actionLoading}>
+			<Button
+				color="green"
+				class="px-5 py-2"
+				on:click={handleApproveBulkUsers}
+				disabled={actionLoading}
+			>
 				{#if actionLoading}
 					<Spinner size="4" class="mr-2" /> Approving...
 				{:else}
 					Yes, Approve Selected
 				{/if}
 			</Button>
-			<Button color="alternative" class="px-5 py-2" on:click={() => (showApproveBulkModal = false)} disabled={actionLoading}>
+			<Button
+				color="alternative"
+				class="px-5 py-2"
+				on:click={() => (showApproveBulkModal = false)}
+				disabled={actionLoading}
+			>
 				Cancel
 			</Button>
 		</div>
@@ -546,24 +595,41 @@
 </Modal>
 
 <!-- Approve All Pending Users Modal -->
-<Modal bind:open={showApproveAllModal} size="xs" title="Approve All Pending Users" autoclose={false}>
+<Modal
+	bind:open={showApproveAllModal}
+	size="xs"
+	title="Approve All Pending Users"
+	autoclose={false}
+>
 	<div class="p-4 text-center">
 		<CheckCircleSolid class="mx-auto mb-4 h-12 w-12 text-blue-500 dark:text-blue-400" />
 		<h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
 			Approve All {pendingUsers.length} Pending Users?
 		</h3>
 		<p class="mb-6 text-sm text-gray-500 dark:text-gray-400">
-			This will approve every pending user account (<span class="font-medium text-gray-900 dark:text-white">{pendingUsers.length} total</span>) in one click.
+			This will approve every pending user account (<span
+				class="font-medium text-gray-900 dark:text-white">{pendingUsers.length} total</span
+			>) in one click.
 		</p>
 		<div class="flex justify-center gap-3">
-			<Button color="blue" class="px-5 py-2" on:click={handleApproveAllPendingUsers} disabled={actionLoading}>
+			<Button
+				color="blue"
+				class="px-5 py-2"
+				on:click={handleApproveAllPendingUsers}
+				disabled={actionLoading}
+			>
 				{#if actionLoading}
 					<Spinner size="4" class="mr-2" /> Approving All...
 				{:else}
 					Yes, Approve All
 				{/if}
 			</Button>
-			<Button color="alternative" class="px-5 py-2" on:click={() => (showApproveAllModal = false)} disabled={actionLoading}>
+			<Button
+				color="alternative"
+				class="px-5 py-2"
+				on:click={() => (showApproveAllModal = false)}
+				disabled={actionLoading}
+			>
 				Cancel
 			</Button>
 		</div>

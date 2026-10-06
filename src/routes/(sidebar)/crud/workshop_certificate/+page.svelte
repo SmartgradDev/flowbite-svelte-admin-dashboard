@@ -28,8 +28,8 @@
 	let currentPage = 1; // Start from page 1
 	let totalPages = 1; // Initialize with 1, will be updated dynamically
 	const itemsPerPage = 10; // Number of items per page
-	let searchQuery = ""; // For storing the search query (name)
-	let hasCertificateFilter = "all"; // For storing the filter value (hasCertificate)
+	let searchQuery = ''; // For storing the search query (name)
+	let hasCertificateFilter = 'all'; // For storing the filter value (hasCertificate)
 
 	// Workshop details from URL
 	$: workshopId = $page.url.searchParams.get('workshopId');
@@ -42,21 +42,24 @@
 			const params: Record<string, any> = {
 				workshopId,
 				page: currentPage,
-				limit: itemsPerPage,
+				limit: itemsPerPage
 			};
 			if (searchQuery) {
 				params.search = searchQuery;
 			}
-			if (hasCertificateFilter !== "all") {
-				params.hasCertificate = hasCertificateFilter === "true";
+			if (hasCertificateFilter !== 'all') {
+				params.hasCertificate = hasCertificateFilter === 'true';
 			}
 
-			const response = await axios.get(`${BASE_URL}/admin/getAllStudentsByWorkshopIdUsingPagination`, {
-				headers: {
-					Authorization: `Bearer ${token}`
-				},
-				params
-			});
+			const response = await axios.get(
+				`${BASE_URL}/admin/getAllStudentsByWorkshopIdUsingPagination`,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`
+					},
+					params
+				}
+			);
 
 			userData = response.data.result;
 			totalPages = response.data.pagination.totalPages;
@@ -131,7 +134,10 @@
 				class="me-4 w-80 border xl:w-96"
 			/>
 
-			<select bind:value={hasCertificateFilter} class="me-4 w-40 border xl:w-52 rounded-md bg-gray-800 text-gray-300 placeholder-gray-400 p-2">
+			<select
+				bind:value={hasCertificateFilter}
+				class="me-4 w-40 rounded-md border bg-gray-800 p-2 text-gray-300 placeholder-gray-400 xl:w-52"
+			>
 				<option value="all">All Students</option>
 				<option value="true">Has Certificate</option>
 				<option value="false">No Certificate</option>
@@ -154,14 +160,16 @@
 					<TableBodyCell class="mr-12 flex items-center space-x-6 whitespace-nowrap p-4">
 						<div class="text-sm font-normal text-gray-500 dark:text-gray-400">
 							<div class="text-base font-semibold text-gray-900 dark:text-white">{user?.name}</div>
-							<div class="text-sm font-normal text-gray-500 dark:text-gray-400">{user?.sso?.email}</div>
+							<div class="text-sm font-normal text-gray-500 dark:text-gray-400">
+								{user?.sso?.email}
+							</div>
 						</div>
 					</TableBodyCell>
 
-					<TableBodyCell class="p-4">{user?.school?.name || "N/A"}</TableBodyCell>
-					<TableBodyCell class="p-4">{user?.phone_number || "N/A"}</TableBodyCell>
-					<TableBodyCell class="p-4">{user?.emailVerification || "False"}</TableBodyCell>
-					<TableBodyCell class="p-4">{user?.haveCertificate ? "True" : "False"}</TableBodyCell>
+					<TableBodyCell class="p-4">{user?.school?.name || 'N/A'}</TableBodyCell>
+					<TableBodyCell class="p-4">{user?.phone_number || 'N/A'}</TableBodyCell>
+					<TableBodyCell class="p-4">{user?.emailVerification || 'False'}</TableBodyCell>
+					<TableBodyCell class="p-4">{user?.haveCertificate ? 'True' : 'False'}</TableBodyCell>
 					<!-- <TableBodyCell class="p-4">
 						{#if user?.certificate}
 							<a href={user.certificate} target="_blank" class="text-blue-500 underline">View Certificate</a>
@@ -190,10 +198,10 @@
 			Showing <span class="font-semibold text-gray-900 dark:text-white">{currentPage}</span> of{' '}
 			<span class="font-semibold text-gray-900 dark:text-white">{totalPages}</span> Entries
 		</span>
-		<div class="inline-flex mt-2 xs:mt-0">
+		<div class="xs:mt-0 mt-2 inline-flex">
 			<!-- Previous Page -->
 			<button
-				class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gray-800 border-0 border-l border-gray-700 rounded-l hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+				class="inline-flex items-center rounded-l border-0 border-l border-gray-700 bg-gray-800 px-4 py-2 text-sm font-medium text-white hover:bg-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
 				on:click={() => {
 					if (currentPage > 1) {
 						currentPage--;
@@ -206,7 +214,7 @@
 			</button>
 			<!-- Next Page -->
 			<button
-				class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gray-800 border-0 border-l border-gray-700 rounded-r hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+				class="inline-flex items-center rounded-r border-0 border-l border-gray-700 bg-gray-800 px-4 py-2 text-sm font-medium text-white hover:bg-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
 				on:click={() => {
 					if (currentPage < totalPages) {
 						currentPage++;
@@ -221,4 +229,4 @@
 	</div>
 </main>
 
-<User bind:open={openUser} data={current_user} workshopId={workshopId} />
+<User bind:open={openUser} data={current_user} {workshopId} />

@@ -5,8 +5,8 @@
 	export let open: boolean = false;
 	export let selectedCount: number = 0;
 
-	const LOGIN_URL = "https://octobrain.org/login";
-	const REGISTER_URL = "https://octobrain.org/register";
+	const LOGIN_URL = 'https://octobrain.org/login';
+	const REGISTER_URL = 'https://octobrain.org/register';
 
 	// Use the same template structure as the backend
 	const createFsaUttaraWorkshopInvitationTemplate = (name: string) => {
@@ -153,8 +153,8 @@
 				Email Preview - FSA Uttara Workshop Invitation
 			</h3>
 		</div>
-		
-		<div class="bg-blue-50 border-l-4 border-blue-400 p-4 dark:bg-blue-900 dark:border-blue-600">
+
+		<div class="border-l-4 border-blue-400 bg-blue-50 p-4 dark:border-blue-600 dark:bg-blue-900">
 			<div class="flex">
 				<div class="flex-shrink-0">
 					<MailBoxSolid class="h-5 w-5 text-blue-400" />
@@ -163,25 +163,28 @@
 					<p class="text-sm text-blue-700 dark:text-blue-200">
 						<strong>Subject:</strong> Registration Verified - Join FSA Uttara Workshop! 🚀
 					</p>
-					<p class="text-sm text-blue-700 dark:text-blue-200 mt-1">
-						<strong>Recipients:</strong> {selectedCount} selected payment{selectedCount > 1 ? 's' : ''}
+					<p class="mt-1 text-sm text-blue-700 dark:text-blue-200">
+						<strong>Recipients:</strong>
+						{selectedCount} selected payment{selectedCount > 1 ? 's' : ''}
 					</p>
 				</div>
 			</div>
 		</div>
 
-		<div class="border rounded-lg p-4 bg-gray-50 dark:bg-gray-800 max-h-96 overflow-y-auto">
-			<h4 class="text-lg font-medium mb-3 text-gray-900 dark:text-white">Email Content Preview:</h4>
-			<div class="bg-white rounded border">
+		<div class="max-h-96 overflow-y-auto rounded-lg border bg-gray-50 p-4 dark:bg-gray-800">
+			<h4 class="mb-3 text-lg font-medium text-gray-900 dark:text-white">Email Content Preview:</h4>
+			<div class="rounded border bg-white">
 				{@html sampleEmailHTML}
 			</div>
 		</div>
 
-		<div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 dark:bg-yellow-900 dark:border-yellow-600">
+		<div
+			class="border-l-4 border-yellow-400 bg-yellow-50 p-4 dark:border-yellow-600 dark:bg-yellow-900"
+		>
 			<div class="flex">
 				<div class="ml-3">
 					<p class="text-sm text-yellow-700 dark:text-yellow-200">
-						<strong>Note:</strong> The actual emails will be personalized with each recipient's name. 
+						<strong>Note:</strong> The actual emails will be personalized with each recipient's name.
 						Users without email addresses will be skipped automatically.
 					</p>
 				</div>
@@ -189,9 +192,7 @@
 		</div>
 
 		<div class="flex justify-end space-x-3">
-			<Button color="alternative" on:click={() => open = false}>
-				Close Preview
-			</Button>
+			<Button color="alternative" on:click={() => (open = false)}>Close Preview</Button>
 		</div>
 	</div>
 </Modal>

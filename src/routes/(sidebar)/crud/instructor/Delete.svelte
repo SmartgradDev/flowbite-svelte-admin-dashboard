@@ -22,7 +22,7 @@
 
 	// Function to handle the delete request for an instructor
 	async function handleDeleteInstructor() {
-		console.log("Inside delete instructor");
+		console.log('Inside delete instructor');
 		console.log(data);
 		console.log(data.id);
 		console.log(token);
@@ -45,7 +45,7 @@
 	// Retrieve the token on component mount
 	onMount(async () => {
 		token = getCookie('token');
-		console.log("token", token);
+		console.log('token', token);
 	});
 </script>
 

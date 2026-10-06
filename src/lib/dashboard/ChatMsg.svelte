@@ -1,9 +1,6 @@
 <script lang="ts">
 	import { Avatar, Dropdown, DropdownItem, ToolbarButton } from 'flowbite-svelte';
-	import {
-		ChevronDownOutline,
-		DotsHorizontalOutline
-	} from 'flowbite-svelte-icons';
+	import { ChevronDownOutline, DotsHorizontalOutline } from 'flowbite-svelte-icons';
 
 	export let avatar: string = 'https://flowbite.com/docs/images/people/profile-picture-2.jpg';
 	export let name: string = 'Michael Gough';

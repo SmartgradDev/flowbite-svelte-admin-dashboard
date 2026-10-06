@@ -21,12 +21,7 @@
 		Toggle,
 		Textarea
 	} from 'flowbite-svelte';
-	import {
-		CogOutline,
-		EditOutline,
-		PlusOutline,
-		RefreshOutline
-	} from 'flowbite-svelte-icons';
+	import { CogOutline, EditOutline, PlusOutline, RefreshOutline } from 'flowbite-svelte-icons';
 	import MetaTag from '../../../utils/MetaTag.svelte';
 
 	const apiUrl = process.env.VITE_API_URL || 'https://prodbackend.octobrain.org';
@@ -68,9 +63,10 @@
 		const status = error?.response?.status;
 		const errData = error?.response?.data;
 		if (status === 401 || status === 403) {
-			const msg = typeof errData?.error === 'object'
-				? errData?.error?.message
-				: (errData?.error || errData?.message);
+			const msg =
+				typeof errData?.error === 'object'
+					? errData?.error?.message
+					: errData?.error || errData?.message;
 			if (msg) return `Session Expired (${msg}). Please log in again.`;
 			return 'Session Expired or Unauthorized (403/401). Please log in again.';
 		}
@@ -152,7 +148,11 @@
 		try {
 			return await axios.patch(`${apiUrl}/admin/systemSettings`, payload, { headers });
 		} catch (err: any) {
-			if (err?.message === 'Network Error' || err?.code === 'ERR_NETWORK' || err?.response?.status === 405) {
+			if (
+				err?.message === 'Network Error' ||
+				err?.code === 'ERR_NETWORK' ||
+				err?.response?.status === 405
+			) {
 				return await axios.post(`${apiUrl}/admin/systemSettings`, payload, { headers });
 			}
 			throw err;
@@ -165,9 +165,8 @@
 		errorMessage = '';
 		successMessage = '';
 
-		const currentValueObj = typeof setting.value === 'string'
-			? tryParseJSON(setting.value)
-			: (setting.value || {});
+		const currentValueObj =
+			typeof setting.value === 'string' ? tryParseJSON(setting.value) : setting.value || {};
 
 		const updatedValueObj = {
 			...(typeof currentValueObj === 'object' && currentValueObj !== null ? currentValueObj : {}),
@@ -180,12 +179,16 @@
 				value: updatedValueObj,
 				description: setting.description || 'Authentication and registration approval configuration'
 			});
-			successMessage = response.data?.message || 'Authentication approval setting updated successfully';
+			successMessage =
+				response.data?.message || 'Authentication approval setting updated successfully';
 			await fetchSystemSettings();
 		} catch (error: any) {
 			console.error('Error updating auth settings:', error);
 			if (error?.message === 'Network Error' || error?.code === 'ERR_NETWORK') {
-				errorMessage = 'CORS Error: The backend server at ' + apiUrl + ' does not allow the PATCH method in its Access-Control-Allow-Methods header.';
+				errorMessage =
+					'CORS Error: The backend server at ' +
+					apiUrl +
+					' does not allow the PATCH method in its Access-Control-Allow-Methods header.';
 			} else {
 				errorMessage = extractErrorMessage(error, 'Failed to update auth settings');
 			}
@@ -258,7 +261,10 @@
 		} catch (error: any) {
 			console.error('Error saving system setting:', error);
 			if (error?.message === 'Network Error' || error?.code === 'ERR_NETWORK') {
-				modalError = 'CORS Error: The backend server at ' + apiUrl + ' does not allow the PATCH method in its Access-Control-Allow-Methods header.';
+				modalError =
+					'CORS Error: The backend server at ' +
+					apiUrl +
+					' does not allow the PATCH method in its Access-Control-Allow-Methods header.';
 			} else {
 				modalError = extractErrorMessage(error, 'Failed to save system setting');
 			}
@@ -288,7 +294,13 @@
 				System Settings
 			</Heading>
 			<div class="flex items-center space-x-2">
-				<Button color="alternative" size="sm" class="gap-2 px-3" on:click={fetchSystemSettings} disabled={loading}>
+				<Button
+					color="alternative"
+					size="sm"
+					class="gap-2 px-3"
+					on:click={fetchSystemSettings}
+					disabled={loading}
+				>
 					<RefreshOutline size="sm" /> Refresh
 				</Button>
 				<Button size="sm" class="gap-2 px-3" on:click={openCreateModal}>
@@ -299,13 +311,15 @@
 
 		{#if successMessage}
 			<Alert color="green" class="mt-4" dismissible on:close={() => (successMessage = '')}>
-				<span class="font-medium">Success:</span> {successMessage}
+				<span class="font-medium">Success:</span>
+				{successMessage}
 			</Alert>
 		{/if}
 
 		{#if errorMessage}
 			<Alert color="red" class="mt-4" dismissible on:close={() => (errorMessage = '')}>
-				<span class="font-medium">Error:</span> {errorMessage}
+				<span class="font-medium">Error:</span>
+				{errorMessage}
 			</Alert>
 		{/if}
 	</div>
@@ -329,15 +343,21 @@
 					<TableBodyCell colspan={5} class="p-12 text-center text-gray-500 dark:text-gray-400">
 						<div class="flex flex-col items-center justify-center space-y-2">
 							<CogOutline class="h-10 w-10 text-gray-400 dark:text-gray-500" />
-							<p class="text-base font-medium text-gray-700 dark:text-gray-300">No system settings found</p>
-							<p class="text-sm text-gray-500 dark:text-gray-400">Click "Add Setting" to create a new system setting.</p>
+							<p class="text-base font-medium text-gray-700 dark:text-gray-300">
+								No system settings found
+							</p>
+							<p class="text-sm text-gray-500 dark:text-gray-400">
+								Click "Add Setting" to create a new system setting.
+							</p>
 						</div>
 					</TableBodyCell>
 				</TableBodyRow>
 			{:else}
 				{#each settings as setting (setting?.id || setting?.key || Math.random())}
 					<TableBodyRow class="text-base">
-						<TableBodyCell class="p-4 font-mono text-sm font-semibold text-gray-900 dark:text-white">
+						<TableBodyCell
+							class="font-mono p-4 text-sm font-semibold text-gray-900 dark:text-white"
+						>
 							{setting?.key ?? 'N/A'}
 						</TableBodyCell>
 						<TableBodyCell class="p-4 text-sm text-gray-600 dark:text-gray-300">
@@ -351,14 +371,21 @@
 										on:change={(e) => handleAuthToggleInTable(setting, e)}
 									/>
 									<span class="text-xs font-semibold text-gray-700 dark:text-gray-200">
-										Require Admin Approval: {isRequireAdminApproval(setting) ? 'ENABLED' : 'DISABLED'}
+										Require Admin Approval: {isRequireAdminApproval(setting)
+											? 'ENABLED'
+											: 'DISABLED'}
 									</span>
 								</div>
 							{:else}
-								<pre class="max-h-24 overflow-auto rounded bg-gray-50 p-2 font-mono dark:bg-gray-900">{formatValue(setting?.value)}</pre>
+								<pre
+									class="font-mono max-h-24 overflow-auto rounded bg-gray-50 p-2 dark:bg-gray-900">{formatValue(
+										setting?.value
+									)}</pre>
 							{/if}
 						</TableBodyCell>
-						<TableBodyCell class="p-4 text-xs">{formatDate(setting?.updatedAt || setting?.createdAt)}</TableBodyCell>
+						<TableBodyCell class="p-4 text-xs"
+							>{formatDate(setting?.updatedAt || setting?.createdAt)}</TableBodyCell
+						>
 						<TableBodyCell class="p-4">
 							<Button
 								size="sm"
@@ -377,7 +404,12 @@
 </main>
 
 <!-- Create / Edit Setting Modal -->
-<Modal bind:open={showModal} size="md" title={isEditMode ? 'Edit System Setting' : 'Create System Setting'} autoclose={false}>
+<Modal
+	bind:open={showModal}
+	size="md"
+	title={isEditMode ? 'Edit System Setting' : 'Create System Setting'}
+	autoclose={false}
+>
 	<form on:submit|preventDefault={handleSaveSetting} class="space-y-4 p-2">
 		{#if modalError}
 			<Alert color="red" class="mb-2" dismissible on:close={() => (modalError = '')}>
@@ -408,13 +440,14 @@
 		</div>
 
 		{#if formKey === 'auth_settings' || !isEditMode}
-			<div class="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-600 dark:bg-gray-700">
+			<div
+				class="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-600 dark:bg-gray-700"
+			>
 				<div class="flex items-center justify-between">
-					<span class="text-sm font-semibold text-gray-900 dark:text-white">Require Admin Approval</span>
-					<Toggle
-						checked={modalRequireApproval}
-						on:change={handleModalToggleChange}
-					/>
+					<span class="text-sm font-semibold text-gray-900 dark:text-white"
+						>Require Admin Approval</span
+					>
+					<Toggle checked={modalRequireApproval} on:change={handleModalToggleChange} />
 				</div>
 			</div>
 		{/if}
@@ -432,7 +465,12 @@
 		</div>
 
 		<div class="flex justify-end gap-3 pt-4">
-			<Button type="button" color="alternative" on:click={() => (showModal = false)} disabled={modalLoading}>
+			<Button
+				type="button"
+				color="alternative"
+				on:click={() => (showModal = false)}
+				disabled={modalLoading}
+			>
 				Cancel
 			</Button>
 			<Button type="submit" color="primary" disabled={modalLoading}>

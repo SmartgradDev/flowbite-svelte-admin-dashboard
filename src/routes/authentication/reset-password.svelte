@@ -26,9 +26,9 @@
 	};
 
 	const path: string = '/authentication/reset-password';
-  const description: string = 'Reset password example - Octobrain Admin Dashboard';
+	const description: string = 'Reset password example - Octobrain Admin Dashboard';
 	const metaTitle: string = 'Octobrain Admin Dashboard - Reset password';
-  const subtitle: string = 'Reset password';
+	const subtitle: string = 'Reset password';
 </script>
 
 <MetaTag {path} {description} title={metaTitle} {subtitle} />

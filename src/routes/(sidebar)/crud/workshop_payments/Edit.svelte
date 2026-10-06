@@ -6,9 +6,9 @@
 	export let open: boolean = false; // modal control
 	export let data: Record<any, any> = {}; // Student data
 	export let workshopId: any = {}; // Workshop ID
-	let payerAccount: string = ""; // Payer account (e.g., email)
-	let transactionId: string = ""; // Transaction ID
-	let paymentId: string = ""; // Payment ID
+	let payerAccount: string = ''; // Payer account (e.g., email)
+	let transactionId: string = ''; // Transaction ID
+	let paymentId: string = ''; // Payment ID
 	let amount: number = 0; // Payment amount
 	let token: string = '';
 	const apiUrl: string = process.env.VITE_API_URL;
@@ -23,7 +23,7 @@
 				return cookie.substring(name.length + 1);
 			}
 		}
-		return "";
+		return '';
 	}
 
 	// Function to handle form submission
@@ -43,12 +43,16 @@
 			};
 
 			// Make the payment API call
-			const paymentResponse = await axios.post(`${apiUrl}/admin/createStudentPayment`, paymentData, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-					'Content-Type': 'application/json'
+			const paymentResponse = await axios.post(
+				`${apiUrl}/admin/createStudentPayment`,
+				paymentData,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						'Content-Type': 'application/json'
+					}
 				}
-			});
+			);
 
 			if (paymentResponse.status === 200) {
 				alert('Payment processed successfully');
@@ -72,17 +76,12 @@
 	});
 </script>
 
-<Modal
-	bind:open
-	title={"Make Payment"}
-	size="md"
-	class="m-4"
->
+<Modal bind:open title={'Make Payment'} size="md" class="m-4">
 	<!-- Modal body -->
 	<div class="space-y-6 p-0">
 		<form on:submit|preventDefault={handleSubmit}>
 			<div class="flex flex-col">
-				<Label class="col-span-6 space-y-2 my-4">
+				<Label class="col-span-6 my-4 space-y-2">
 					<span>Payer Account (PhoneNumber)</span>
 					<Input
 						type="number"
@@ -94,7 +93,7 @@
 					/>
 				</Label>
 
-				<Label class="col-span-6 space-y-2 my-4">
+				<Label class="col-span-6 my-4 space-y-2">
 					<span>Amount</span>
 					<Input
 						type="number"
@@ -105,7 +104,7 @@
 						required
 					/>
 				</Label>
-								<Label class="col-span-6 space-y-2 my-4">
+				<Label class="col-span-6 my-4 space-y-2">
 					<span>Transaction ID</span>
 					<Input
 						type="text"
@@ -117,7 +116,7 @@
 					/>
 				</Label>
 
-				<Label class="col-span-6 space-y-2 my-4">
+				<Label class="col-span-6 my-4 space-y-2">
 					<span>Payment ID</span>
 					<Input
 						type="text"

@@ -1,12 +1,5 @@
 <script lang="ts">
-	import {
-		Breadcrumb,
-		BreadcrumbItem,
-		Button,
-		Checkbox,
-		Heading,
-		Toast
-	} from 'flowbite-svelte';
+	import { Breadcrumb, BreadcrumbItem, Button, Checkbox, Heading, Toast } from 'flowbite-svelte';
 	import { Table, TableBody, TableBodyCell, TableBodyRow, TableHead } from 'flowbite-svelte';
 	import { TableHeadCell, Toolbar, ToolbarButton, ToolbarGroup } from 'flowbite-svelte';
 	import { CogSolid, DotsVerticalOutline, DownloadSolid } from 'flowbite-svelte-icons';
@@ -27,18 +20,18 @@
 	import axios from 'axios';
 
 	const apiUrl = process.env.VITE_API_URL;
-	
+
 	// Set payment_type to club-game for this specific route
-	const payment_type = "club-game";
+	const payment_type = 'club-game';
 
 	function setCookie(name, value, days) {
-		let expires = "";
+		let expires = '';
 		if (days) {
 			let date = new Date();
-			date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-			expires = "; expires=" + date.toUTCString();
+			date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+			expires = '; expires=' + date.toUTCString();
 		}
-		document.cookie = name + "=" + (value || "") + expires + "; path=/";
+		document.cookie = name + '=' + (value || '') + expires + '; path=/';
 	}
 
 	function getCookie(name) {
@@ -101,14 +94,18 @@
 			}
 
 			// Make a POST request to the refreshToken endpoint with the token and refresh token
-			const response = await axios.post(`${BASE_URL_refreshtoken}/admin/refreshToken/`, {
-				token,
-				refreshToken
-			}, {
-				headers: {
-					'Content-Type': 'application/json'
+			const response = await axios.post(
+				`${BASE_URL_refreshtoken}/admin/refreshToken/`,
+				{
+					token,
+					refreshToken
+				},
+				{
+					headers: {
+						'Content-Type': 'application/json'
+					}
 				}
-			});
+			);
 
 			// Extract the new token and refresh token from the response
 			const newToken = response.data.token;
@@ -185,7 +182,7 @@
 	// Handle select all checkbox
 	const handleSelectAll = () => {
 		if (selectAll) {
-			selectedPayments = customPaymentData.map(payment => payment.id);
+			selectedPayments = customPaymentData.map((payment) => payment.id);
 		} else {
 			selectedPayments = [];
 		}
@@ -196,9 +193,9 @@
 		if (checked) {
 			selectedPayments = [...selectedPayments, paymentId];
 		} else {
-			selectedPayments = selectedPayments.filter(id => id !== paymentId);
+			selectedPayments = selectedPayments.filter((id) => id !== paymentId);
 		}
-		
+
 		// Update selectAll state
 		selectAll = selectedPayments.length === customPaymentData.length;
 	};
@@ -230,7 +227,6 @@
 			if (refreshToken) {
 				await fetchAllCustomPaymentData(refreshToken);
 			}
-
 		} catch (error) {
 			console.error('Error approving payment:', error);
 			showToastMessage(
@@ -265,12 +261,9 @@
 			);
 
 			const { successful, failed, total } = response.data.summary;
-			
+
 			if (failed === 0) {
-				showToastMessage(
-					`Successfully approved ${successful} payment(s)!`,
-					'success'
-				);
+				showToastMessage(`Successfully approved ${successful} payment(s)!`, 'success');
 			} else {
 				showToastMessage(
 					`Approved ${successful} of ${total} payment(s). ${failed} failed.`,
@@ -287,7 +280,6 @@
 			if (refreshToken) {
 				await fetchAllCustomPaymentData(refreshToken);
 			}
-
 		} catch (error) {
 			console.error('Error approving multiple payments:', error);
 			showToastMessage(
@@ -304,7 +296,7 @@
 		toastMessage = message;
 		toastType = type;
 		showToast = true;
-		
+
 		// Auto-hide toast after 5 seconds
 		setTimeout(() => {
 			showToast = false;
@@ -339,11 +331,11 @@
 						Add Custom Payment
 					</Button>
 					{#if selectedPayments.length > 0}
-						<Button 
-							on:click={approveMultiplePayments} 
+						<Button
+							on:click={approveMultiplePayments}
 							disabled={approving}
 							color="green"
-							class="whitespace-nowrap ml-2"
+							class="ml-2 whitespace-nowrap"
 						>
 							<CheckCircleSolid class="mr-2 h-3.5 w-3.5" />
 							{approving ? 'Approving...' : `Approve Selected (${selectedPayments.length})`}
@@ -366,10 +358,7 @@
 			<Table hoverable={true}>
 				<TableHead>
 					<TableHeadCell>
-						<Checkbox 
-							bind:checked={selectAll} 
-							on:change={handleSelectAll}
-						/>
+						<Checkbox bind:checked={selectAll} on:change={handleSelectAll} />
 					</TableHeadCell>
 					<TableHeadCell>Name</TableHeadCell>
 					<TableHeadCell>Email</TableHeadCell>
@@ -386,7 +375,7 @@
 					{#each customPaymentData as customPayment, index}
 						<TableBodyRow>
 							<TableBodyCell>
-								<Checkbox 
+								<Checkbox
 									checked={selectedPayments.includes(customPayment.id)}
 									on:change={(e) => handleSelectPayment(customPayment.id, e.target.checked)}
 								/>
@@ -396,24 +385,27 @@
 								<div class="flex items-center">
 									{customPayment.email || 'N/A'}
 									{#if !customPayment.email}
-										<ExclamationCircleSolid class="ml-2 h-4 w-4 text-red-500" title="No email address" />
+										<ExclamationCircleSolid
+											class="ml-2 h-4 w-4 text-red-500"
+											title="No email address"
+										/>
 									{/if}
 								</div>
 							</TableBodyCell>
 							<TableBodyCell>
 								<div class="flex items-center">
 									{#if customPayment.emailVerified}
-										<CheckCircleSolid class="h-4 w-4 text-green-500 mr-1" />
+										<CheckCircleSolid class="mr-1 h-4 w-4 text-green-500" />
 										<span class="text-green-700 dark:text-green-400">Verified</span>
 									{:else}
-										<CloseCircleSolid class="h-4 w-4 text-red-500 mr-1" />
+										<CloseCircleSolid class="mr-1 h-4 w-4 text-red-500" />
 										<span class="text-red-700 dark:text-red-400">Not Verified</span>
 									{/if}
 								</div>
 							</TableBodyCell>
 							<TableBodyCell>
 								{#if customPayment.gameLevelName}
-									<span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
+									<span class="rounded bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
 										{customPayment.gameLevelName}
 									</span>
 								{:else}
@@ -427,7 +419,9 @@
 								{#if customPayment.final_amount}
 									<span class="font-semibold">৳{customPayment.final_amount}</span>
 									{#if customPayment.discount_amount}
-										<span class="text-green-600 text-sm block">(-৳{customPayment.discount_amount})</span>
+										<span class="block text-sm text-green-600"
+											>(-৳{customPayment.discount_amount})</span
+										>
 									{/if}
 								{:else}
 									{customPayment.amount || 'N/A'}
@@ -443,7 +437,7 @@
 										color="green"
 										size="sm"
 									>
-										<CheckCircleSolid class="h-4 w-4 mr-1" />
+										<CheckCircleSolid class="mr-1 h-4 w-4" />
 										{approving ? 'Approving...' : 'Approve'}
 									</Button>
 								{/if}
@@ -478,16 +472,12 @@
 
 <!-- Toast for notifications -->
 {#if showToast}
-	<Toast 
-		position="top-right" 
-		color={toastType === 'success' ? 'green' : 'red'}
-		class="mb-4"
-	>
+	<Toast position="top-right" color={toastType === 'success' ? 'green' : 'red'} class="mb-4">
 		<svelte:fragment slot="icon">
 			{#if toastType === 'success'}
-				<CheckCircleSolid class="w-5 h-5" />
+				<CheckCircleSolid class="h-5 w-5" />
 			{:else}
-				<CloseCircleSolid class="w-5 h-5" />
+				<CloseCircleSolid class="h-5 w-5" />
 			{/if}
 		</svelte:fragment>
 		{toastMessage}

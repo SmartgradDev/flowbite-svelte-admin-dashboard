@@ -14,7 +14,9 @@
 		class="items-center justify-between border-b border-gray-200 pb-4 dark:border-gray-700 sm:flex"
 	>
 		<div class="mb-4 w-full sm:mb-0">
-			<h3 class="text-base font-normal text-gray-500 dark:text-gray-400">Club, Workshop and Events</h3>
+			<h3 class="text-base font-normal text-gray-500 dark:text-gray-400">
+				Club, Workshop and Events
+			</h3>
 			<span class="text-2xl font-bold leading-none text-gray-900 dark:text-white sm:text-3xl"
 				>Growth</span
 			>

@@ -29,7 +29,7 @@
 
 	async function handleSubmit(event: Event) {
 		event.preventDefault();
-		console.log("Inside submit");
+		console.log('Inside submit');
 		console.log(token);
 
 		try {
@@ -54,7 +54,7 @@
 				final_amount: data.final_amount ? parseInt(data.final_amount) : null
 			};
 
-			console.log("Payload to send:", payload);
+			console.log('Payload to send:', payload);
 
 			const response = await axios.patch(`${apiUrl}/admin/customPaymentUpdate`, payload, {
 				headers: {
@@ -62,8 +62,8 @@
 					'Content-Type': 'application/json'
 				}
 			});
-			
-			console.log("Update response:", response.data);
+
+			console.log('Update response:', response.data);
 			open = false;
 			window.location.reload();
 		} catch (error: any) {
@@ -86,27 +86,15 @@
 <Modal bind:open size="md" autoclose={false} class="w-full">
 	<form class="flex flex-col space-y-6" on:submit={handleSubmit}>
 		<h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Edit Custom Payment</h3>
-		
+
 		<Label class="space-y-2">
 			<span>Name</span>
-			<Input
-				type="text"
-				name="name"
-				bind:value={data.name}
-				placeholder="Enter name"
-				required
-			/>
+			<Input type="text" name="name" bind:value={data.name} placeholder="Enter name" required />
 		</Label>
 
 		<Label class="space-y-2">
 			<span>Email</span>
-			<Input
-				type="email"
-				name="email"
-				bind:value={data.email}
-				placeholder="Enter email"
-				required
-			/>
+			<Input type="email" name="email" bind:value={data.email} placeholder="Enter email" required />
 		</Label>
 
 		<Label class="space-y-2">
@@ -198,22 +186,12 @@
 
 		<Label class="space-y-2">
 			<span>Age</span>
-			<Input
-				type="number"
-				name="age"
-				bind:value={data.age}
-				placeholder="Enter age"
-			/>
+			<Input type="number" name="age" bind:value={data.age} placeholder="Enter age" />
 		</Label>
 
 		<Label class="space-y-2">
 			<span>Venue</span>
-			<Select
-				items={venues}
-				name="venue"
-				bind:value={data.venue}
-				placeholder="Select venue"
-			/>
+			<Select items={venues} name="venue" bind:value={data.venue} placeholder="Select venue" />
 		</Label>
 
 		<Label class="space-y-2">

@@ -86,8 +86,6 @@
 			name: 'Activities',
 			icon: BrainSolid,
 			children: {
-
-				
 				Club: '/crud/clubs',
 				Competition: '/crud/competition',
 				Event: '/crud/event',
@@ -98,7 +96,6 @@
 			name: 'Institution',
 			icon: BuildingOutline,
 			children: {
-
 				School: '/crud/schools',
 				Sponsor: '/crud/sponsors'
 			}
@@ -107,9 +104,8 @@
 			name: 'Homepage',
 			icon: HomeOutline,
 			children: {
-
 				Testimonial: '/crud/testimonials',
-				Blog: '/crud/blogs',
+				Blog: '/crud/blogs'
 			}
 		},
 
@@ -117,12 +113,9 @@
 			name: 'Timeline',
 			icon: FileChartBarSolid,
 			children: {
-
-
 				'Featured Posts': '/crud/announcedfeaturedposts',
-				'Tags': '/crud/tags',
-				'Avatar': '/crud/avatar'
-
+				Tags: '/crud/tags',
+				Avatar: '/crud/avatar'
 			}
 		},
 		{
@@ -137,7 +130,7 @@
 				'HURDCO Workshop': '/crud/custom-payment/hurdco-workshop',
 				'FSA Uttara Workshop': '/crud/custom-payment/fsa-uttara-workshop'
 			}
-		},
+		}
 		// { name: 'Settings', icon: CogOutline, href: '/settings' },
 		// {
 		// 	name: 'Pages',
@@ -175,7 +168,7 @@
 			label: 'GitHub Repository',
 			href: 'https://github.com/aukik/flowbite-svelte-admin-dashboard',
 			icon: GithubSolid
-		},
+		}
 		// {
 		// 	label: 'Flowbite Svelte',
 		// 	href: 'https://flowbite-svelte.com/docs/pages/quickstart',
