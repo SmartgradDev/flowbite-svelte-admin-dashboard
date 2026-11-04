@@ -119,6 +119,14 @@
 			}
 		},
 		{
+			name: 'All Workshops',
+			icon: BrainSolid,
+			children: {
+				'Workshop Pages': '/crud/workshop-pages',
+				Venues: '/crud/workshop-venues'
+			}
+		},
+		{
 			name: 'Custom Payment',
 			icon: CogOutline,
 			children: {
